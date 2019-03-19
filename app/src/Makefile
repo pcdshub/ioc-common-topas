@@ -12,23 +12,18 @@ include $(TOP)/configure/CONFIG
 # Support Perl C regular expression library
 USR_INCLUDES += -I$(PCRE_INCLUDE)
 
-# Support for libusb
-USR_INCLUDES += -I/usr/include/libusb-1.0
-#USR_INCLUDES += -lusb-1.0
-
 #======================================================
 # PATH TO "NON EPICS" EXTERNAL PACKAGES: USER LIBRARIES
 #======================================================
 
 pcre_DIR = $(PCRE_LIB)
-usb-1.0_DIR = /usr/lib64
+curl_DIR = /reg/g/home/mcbrowne/rhel7/lib
 
 # ======================================================
 # LINK "NON EPICS" EXTERNAL PACKAGE LIBRARIES STATICALLY
 #=======================================================
 
 USR_LIBS_Linux += pcre
-USR_LIBS_Linux += usb-1.0 
 #USR_LIBS += pcre
 
 #=============================
@@ -66,6 +61,8 @@ topas_LIBS += autosave
 topas_LIBS += asyn
 topas_LIBS += stream
 topas_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+topas_LDFLAGS += -L$(curl_DIR) -lcurl
 
 #ifneq '$(T_A)' 'RTEMS-beatnik'
 #PROD_SYS_LIBS_DEFAULT += pcre

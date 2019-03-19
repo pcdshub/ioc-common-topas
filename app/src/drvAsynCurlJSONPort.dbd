@@ -1,1 +1,1 @@
-registrar(drvAsynUSBPortRegisterCommands)
+registrar(drvAsynCurlJSONPortRegisterCommands)

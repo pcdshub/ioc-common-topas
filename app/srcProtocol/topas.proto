@@ -1,148 +1,21 @@
-# This protocol file was based on the 
-# RGB Photonics Qmini Spectrometer
-InTerminator  = "";
-#OutTerminator = "";
-ReplyTimeout  =  20;
-ReadTimeout   =  10;
+InTerminator  = "\r\n";
+OutTerminator = "\r\n";
+ReplyTimeout  =  200;
+ReadTimeout   =  100;
 WriteTimeout  =  100;
 ExtraInput    = Ignore;
 
-initialize {
-	out "\x00\x00\x00\x00" ;
-	in "%4r";
-}
+SETWL   { out "PUTV:Optical/WavelengthControl/SetWavelengthUsingAnyInteraction:IGNORE"; out "%g"; }
+GETWL   { out "GET:Optical/WavelengthControl/Output/Wavelength"; in "%g"; }
+GETWSIP { out "GET:Optical/WavelengthControl/Output,IsWavelengthSettingInProgress"; in "%d" }
 
-reset {
-	#out "%B\x00\x00\x20\x00" ;
-	out "\x00\x00\x20\x00" ;
-	#out "%D\x00\x00\x20\x00" ;
-	in "%4r";
-}
+ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen", in "%{false|true}" }
+ISILOPEN{ out "GET:ShutterInterlock/IsInterlockOpen", in "%{false|true}" }
+OPENSH  { out "PUT:ShutterInterlock/OpenShutter:I" }
+CLOSESH { out "PUT:ShutterInterlock/CloseShutter:I" }
 
-device_id {
-	out "\x00\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-serial_number {
-	out "\x01\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%u\00";
-}
-
-manufacturer {
-	out "\x02\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%[a-zA-Z ]\x00";
-}
-
-name {
-	out "\x03\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%s\x00";
-}
-
-hw_version {
-	out "\x04\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-sw_version {
-	out "\x05\x20\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-get_pixel_count {
-	out "\x07\x20\x00\x00";
-	in "\x00\x00\x00\x00%#4r";
-}
-
-get_exposure {
-	out "\x00\x10\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-set_exposure {
-	out "\x00\x11\x00\x00%#0.4r" ;
-	in "\x00\x00\x00\x00";
-    @init { get_exposure; }
-}
-
-get_trig_mode {
-    out "\x04\x10\x00\x00";
-	in "\x00\x00\x00\x00%#4r";
-}
-
-set_trig_mode {
-    out "\x04\x11\x00\x00%#0.4r";
-	in "\x00\x00\x00\x00";
-}
-
-get_trig_delay {
-    out "\x05\x10\x00\x00";
-	in "\x00\x00\x00\x00%#4r";
-}
-
-get_trig_delay_min {
-    out "\x05\x12\x00\x00";
-	in "\x00\x00\x00\x00%#4r";
-}
-
-get_trig_delay_max {
-    out "\x05\x13\x00\x00";
-	in "\x00\x00\x00\x00%#4r";
-}
-
-set_trig_delay {
-    out "\x05\x11\x00\x00%#0.4r";
-	in "\x00\x00\x00\x00";
-    @init { get_trig_delay; }
-}
-
-get_io_conf {
-    out "\x04\x10\x00\x00";
-	in "\x00\x00\x00\x00%(\$1:TRIG_MODE_RBV)r%(\$1:TRIG_EDGE_RBV)r%(\$1:TRIG_PIN_RBV)r\x00";
-}
-
-set_io_conf {
-    out "\x04\x11\x00\x00%(\$1:SET_TRIG_MODE.VAL)r%(\$1:SET_TRIG_EDGE.RVAL)r%(\$1:SET_TRIG_PIN)r\x00";
-	in "\x00\x00\x00\x00";
-    @init { get_io_conf; }
-}
-
-get_temp {
-	out "\x01\x30\x00\x00" ;
-	in "\x00\x00\x00\x00%#4R";
-}
-
-get_status {
-	out "\x00\x30\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-get_spectrum {
-	out "\x00\x40\x00\x00" ;
-    separator="";
-    ReadTimeout   =  20;
-	in "\x00\x00\x00\x00%(\$1:SPECTRUM_EXPOSURE_TIME)#4r%(\$1:SPECTRUM_AVERAGING)#4r%(\$1:SPECTRUM_TIMESTAMP)#4r%(\$1:SPECTRUM_LOAD_LEVEL)#4R%(\$1:SPECTRUM_TEMPERATURE)#4R%(\$1:SPECTRUM_PIXEL_COUNT)#2r%(\$1:SPECTRUM_PIXEL_FORMAT)#2r%(\$1:SPECTRUM_PROCESSING_STEPS)#2r%(\$1:SPECTRUM_INTENSITY_UNITS)#2r%(\$1:SPECTRUM_DROPPED)#4r%(\$1:SPECTRUM_SATURATION_VALUE)#4R%(\$1:SPECTRUM_OFFSET_AVG)#4R%(\$1:SPECTRUM_DARK_AVG)#4R%(\$1:SPECTRUM_READOUT_NOISE)#4R%#4R";
-}
-
-start_exposure {
-	out "\x04\x00\x00\x00\x01\x00\x00\x00" ;
-	in "\x00\x00\x00\x00";
-}
-
-get_wavelengths {
-	out "\x01\x40\x00\x00" ;
-    separator="";
-    ReadTimeout   =  20;
-	in "\x00\x00\x00\x00%#4R";
-}
-
-get_processing_steps {
-	out "\x02\x10\x00\x00\x00\x00\x00\x00" ;
-	in "\x00\x00\x00\x00%#4r";
-}
-
-set_processing_steps {
-	out "\x02\x11\x00\x00%#0.4r" ;
-	in "\x00\x00\x00\x00";
-    @init { get_processing_steps; }
-}
+SETTPU  { out "PUTV:Motors/TargetPositionInUnits?id=\$1:I"; out "%g"; }
+GETTPU  { out "GET:Motors/TargetPositionInUnits?id=\$1"; in "%g"; }
+GETAPU  { out "GET:Motors/ActualPositionInUnits?id=\$1"; in "%g"; }
+STOP    { out "POST:Motors/Stop?id=\$1:I"; }
+STOPALL { out "POST:Motors/StopAll:I"; }
