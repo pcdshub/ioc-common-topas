@@ -1,5 +1,5 @@
 #
-# qmini substitutions file
+# topas substitutions file
 #
 # Generate a list of PV's which will be expanded
 # once using the $(IOC) macro for each IOC instance.

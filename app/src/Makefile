@@ -49,7 +49,6 @@ topas_DBD += asyn.dbd
 topas_DBD += drvAsynSerialPort.dbd
 topas_DBD += drvAsynIPPort.dbd
 topas_DBD += stream.dbd
-topas_DBD += asynInterposeDribble.dbd
 
 topas_DBD += drvAsynCurlJSONPort.dbd
 

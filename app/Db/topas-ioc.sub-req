@@ -1,5 +1,5 @@
 #
-# qmini autosave substitutions file
+# topas autosave substitutions file
 #
 # Generate a list of PV's which will be expanded
 # once using the $(IOC) macro for each IOC instance.
@@ -17,7 +17,7 @@ file autosave_iocAdmin.tpl-req
 	}
 }
 
-file qmini.tpl-req
+file topas.tpl-req
 {
         {
                 P=$(P)
