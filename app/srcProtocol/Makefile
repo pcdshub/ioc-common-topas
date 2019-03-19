@@ -11,7 +11,7 @@ include $(TOP)/configure/CONFIG
 # What protocol files should be copied as part of the build.
 # Enable this line to install example.proto to $(TOP)/protocol
 # However, this is not necessary as long as your st.cmd sets
-# the env var STREAM_PROTOCOL_PATH to $(TOP)/qminiApp/srcProtocol
+# the env var STREAM_PROTOCOL_PATH to $(TOP)/app/srcProtocol
 #COPY_FILES += example.proto
 
 # What subdirectory should hold the protcol files.  For this example,

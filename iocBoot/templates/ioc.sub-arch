@@ -3,7 +3,7 @@
 ## iocAdmin PV's on this IOC
 
 # Generate IOC archive request 
-file qmini-ioc.archive
+file topas-ioc.archive
 {
 	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)", BASE_NAME = "$$NAME" }
 }

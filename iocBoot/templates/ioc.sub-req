@@ -1,8 +1,8 @@
-# qmini IOC instance archive file
+# topas IOC instance archive file
 
 # Generate autosave PV list for IOC specific PV's
 
-file qmini-ioc.req
+file topas-ioc.req
 {
 	{
 		P="$$(NAME)"
