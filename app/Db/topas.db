@@ -1,0 +1,800 @@
+# This file was originally done for a
+# RGB Photonics Qmini spectrometer. 
+#
+# Required Macros:
+#   P
+#       EPICS prefix.
+#       Every PV for this device starts with this prefix    
+#
+
+# User can enable or disable all serial communications
+# with the device using this PV.
+# Turning it off keeps error messages from spewing to the console.
+
+record(stringin, "$(P):DESCRIPTION")
+{
+        field(DESC, "Free use general description array")
+}
+
+record(seq, "$(P):GET_SPECTROMETER_DATA")
+{
+	field(DESC, "Get spectrometer data")
+	field(SCAN, "Passive")
+    field(DO1, "1")
+    field(DO2, "1")
+    field(DO3, "1")
+    field(DO3, "1")
+    field(DO4, "1")
+    field(DO5, "1")
+    field(DO6, "1")
+    field(DO7, "1")
+    field(DO8, "1")
+    field(DO9, "1")
+    field(DOA, "1")
+    field(LNK1, "$(P):INIT.PROC")
+    field(DLY2, "0.5") # Give time for spectrometer to reset
+    field(LNK2, "$(P):MODEL_CODE.PROC")
+    field(LNK3, "$(P):SERIAL_NUMBER.PROC")
+    field(LNK4, "$(P):MANUFACTURER.PROC")
+    field(LNK5, "$(P):NAME.PROC")
+    field(LNK6, "$(P):GET_HW_VERSION.PROC")
+    field(LNK7, "$(P):GET_SW_VERSION.PROC")
+    field(LNK8, "$(P):PIXEL_COUNT.PROC")
+    field(LNK9, "$(P):GET_EXPOSURE_TIME.PROC")
+    field(LNKA, "$(P):GET_WAVELENGTHS.PROC")
+    field(PINI, "YES")
+}
+
+record(bo, "$(P):INIT")
+{
+    field(DESC, "Initialize communication")
+    field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(OUT, "@qmini.proto initialize $(PORT)")
+}
+
+record(longin, "$(P):MODEL_CODE") # Device ID is always 0x276E0208 for the Qmini.
+{
+	field(DESC, "Spectrometer Model Code")
+	field(INP, "@qmini.proto device_id $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SERIAL_NUMBER")
+{
+	field(DESC, "Spectrometer Serial Number")
+	field(INP, "@qmini.proto serial_number $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}
+
+record(stringin, "$(P):MANUFACTURER")
+{
+	field(DESC, "Spectrometer Manufacturer")
+	field(INP, "@qmini.proto manufacturer $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}
+
+record(stringin, "$(P):NAME")
+{
+	field(DESC, "Spectrometer Name")
+	field(INP, "@qmini.proto name $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):GET_HW_VERSION")
+{
+	field(DESC, "Spectrometer Hardware Version")
+	field(INP, "@qmini.proto hw_version $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(FLNK, "$(P):HW_VERSION_TRANSLATE PP")
+}
+
+record(aSub, "$(P):HW_VERSION_TRANSLATE") {
+    field(DESC, "Translate HW version")
+    field(INAM, "convVersionInit")        
+    field(SNAM, "convVersionProc")        
+    field(INPA, "$(P):GET_HW_VERSION NPP")         
+    field(FTA,  "LONG")                  
+    field(OUTA, "$(P):HW_VERSION PP")         
+    field(FTVA, "STRING")                
+}
+
+record(stringout, "$(P):HW_VERSION")
+{
+    field(DESC, "Spectrometer Hardware Version")
+}
+
+record(longin, "$(P):GET_SW_VERSION")
+{
+	field(DESC, "Spectrometer Software Version")
+	field(INP, "@qmini.proto sw_version $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(FLNK, "$(P):SW_VERSION_TRANSLATE PP")
+}
+
+record(aSub, "$(P):SW_VERSION_TRANSLATE") {
+    field(DESC, "Translate SW version")
+    field(INAM, "convVersionInit")        
+    field(SNAM, "convVersionProc")        
+    field(INPA, "$(P):GET_SW_VERSION NPP")         
+    field(FTA,  "LONG")                  
+    field(OUTA, "$(P):SW_VERSION PP")         
+    field(FTVA, "STRING")                
+}
+
+record(stringout, "$(P):SW_VERSION")
+{
+    field(DESC, "Spectrometer Software Version")
+}
+
+record(longin, "$(P):PIXEL_COUNT")
+{
+	field(DESC, "Spectrometer Pixel Count")
+	field(INP, "@qmini.proto get_pixel_count $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):GET_EXPOSURE_TIME")
+{
+    field(DESC, "Current Spectrometer Exposure Time")
+    field(INP, "@qmini.proto get_exposure $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(EGU, "us")
+}
+ 
+record(longout, "$(P):SET_EXPOSURE_TIME")
+{
+    field(DESC, "Set Spectrometer Exposure Time")
+    field(OUT, "@qmini.proto set_exposure $(PORT)")
+	field(DTYP, "stream")
+    field(OMSL, "closed_loop")
+    field(DRVH, "600000000") # 600 s
+    field(DRVL, "3")         # 3 us
+    field(EGU, "us")
+    field(FLNK, "$(P):GET_EXPOSURE_TIME PP")
+}
+
+record(ai, "$(P):TEMP")
+{
+	field(DESC, "Spectrometer Temperature")
+	field(INP, "@qmini.proto get_temp $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, ".5 second")
+}
+
+record(longin, "$(P):GET_STATUS")
+{
+	field(DESC, "Spectrometer Status")
+	field(INP, "@qmini.proto get_status $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, ".2 second")
+    field(FLNK, "$(P):CALC_STATUS PP")
+}
+
+record(calc, "$(P):CALC_STATUS")
+{
+    field(DESC, "Spectrometer Status")
+    field(INPA, "$(P):GET_STATUS NPP")
+    field(CALC, "A<255?A:A-251")
+    field(SCAN, "Passive")
+    field(FLNK, "$(P):STATUS PP")
+}
+
+record(mbbo, "$(P):STATUS")
+{
+    field(DESC, "Spectrometer Status")
+    field(SCAN, "Passive")
+    field(OMSL, "closed_loop")
+    field(DOL, "$(P):CALC_STATUS.VAL NPP")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(TWVL, 2)
+    field(THVL, 3)
+    field(FRVL, 4)
+    field(FVVL, 5)
+    field(SXVL, 6)
+    field(SVVL, 7)
+    field(ZRST, "Idle")
+    field(ONST, "Waiting For Trig")
+    field(TWST, "TakingSpectrum")
+    field(THST, "Waiting for Temp")
+    field(FRST, "Not Ready")
+    field(FVST, "Busy")
+    field(SXST, "Error")
+    field(SVST, "Closed")
+}
+
+#record(bo, "$(P):ACQUIRE")
+#{
+#    field(DESC, "Acquire spectrum based on settings")
+#    field(SCAN, "Passive")
+#    field(ZNAM, "Stopped")
+#    field(ONAM, "Acquire")
+#    field(FLNK, "$(P):CALC_ACQUIRE PP")
+#}
+#
+#record(calcout, "$(P):CALC_ACQUIRE")
+#{
+#    field(DESC, "Spectrometer Status")
+#    field(INPA, "$(P):ACQUIRE NPP")
+#    field(CALC, "A+1")
+#    field(SCAN, "Passive")
+#    #field(OUT, "$(P):SPECTRUM_FANOUT.SELN PP")
+#    field(OUT, "$(P):SPECTRUM_FANOUT.SELN PP")
+#    field(OOPT, "On Change")
+#    field(DOPT, "CALC")
+#}
+
+record(seq, "$(P):GET_SPECTRUM")
+{
+	field(DESC, "Get a spectrum from the spectrometer")
+	field(SCAN, "Passive")
+    field(DO1, "1")
+    field(DO2, "1")
+    field(LNK1, "$(P):START_EXPOSURE.PROC")
+    field(LNK2, "$(P):SPECTRUM.PROC")
+}
+
+record(longin, "$(P):CLEAR_SPECTROMETER")
+{
+	field(DESC, "Clear (re-init) the spectrometer")
+	field(INP, "@qmini.proto initialize $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+}   
+
+record(longin, "$(P):START_EXPOSURE")
+{
+	field(DESC, "Start Spectrometer Exposure")
+	field(INP, "@qmini.proto start_exposure $(PORT)")
+	field(DTYP, "stream")
+    field(SCAN, ".1 second")
+    field(FLNK, "$(P):SPECTRUM PP")
+}   
+
+record(waveform, "$(P):SPECTRUM")
+{
+	field(DESC, "Read Spectrometer Spectrum")
+	field(INP, "@qmini.proto get_spectrum($(P)) $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(NELM, "2500")
+    field(FTVL, "FLOAT")
+}
+
+record(longin, "$(P):SPECTRUM_EXPOSURE_TIME")
+{
+	field(DESC, "Spectrometer Exposure Time (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_AVERAGING")
+{
+	field(DESC, "Spectrometer Averaging (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_TIMESTAMP")
+{
+	field(DESC, "Spectrometer Timestamp (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_LOAD_LEVEL")
+{
+	field(DESC, "Spectrometer Load Level (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_TEMPERATURE")
+{
+	field(DESC, "Spectrometer Temperature (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_PIXEL_COUNT")
+{
+	field(DESC, "Spectrometer Pixel Count (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_PIXEL_FORMAT")
+{
+	field(DESC, "Spectrometer Pixel Format (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_PROCESSING_STEPS")
+{
+	field(DESC, "Spectrometer Processing Steps (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_INTENSITY_UNITS")
+{
+	field(DESC, "Spectrometer Intensity Units (Header)")
+	field(SCAN, "Passive")
+}
+
+record(longin, "$(P):SPECTRUM_DROPPED")
+{
+	field(DESC, "Spectrometer Spectrum Dropped (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_SATURATION_VALUE")
+{
+	field(DESC, "Spectrometer Saturation Value (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_OFFSET_AVG")
+{
+	field(DESC, "Spectrometer Offset Average (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_DARK_AVG")
+{
+	field(DESC, "Spectrometer Dark Average (Header)")
+	field(SCAN, "Passive")
+}
+
+record(ai, "$(P):SPECTRUM_READOUT_NOISE")
+{
+	field(DESC, "Spectrometer Readout Noise (Header)")
+	field(SCAN, "Passive")
+}
+
+record(seq, "$(P):GET_WAVELENGTHS")
+{
+	field(DESC, "Get the wavelengths from the spectrometer")
+	field(SCAN, "Passive")
+    field(DO1, "1")
+    field(DO2, "1")
+    field(DO3, "1")
+    field(LNK1, "$(P):START_EXPOSURE.PROC")
+    field(LNK2, "$(P):WAVELENGTHS.PROC")
+    field(DLY1, "5")
+    field(DLY2, "1")
+}
+
+record(waveform, "$(P):WAVELENGTHS")
+{
+	field(DESC, "Read Spectrometer Wavelengths")
+	field(INP, "@qmini.proto get_wavelengths $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(NELM, "2500")
+    field(FTVL, "FLOAT")
+}
+
+record(longout, "$(P):SET_TRIG_MODE")
+{
+    field(DESC, "Set Spectrometer Trigger Mode")
+	field(SCAN, "Passive")
+    field(OUT, "@qmini.proto set_trig_mode $(PORT)")
+	field(DTYP, "stream")
+    field(OMSL, "closed_loop")
+    field(DRVH, "2")
+    field(DRVL, "0")
+    field(FLNK, "$(P):GET_TRIG_MODE PP")
+}
+
+record(longin, "$(P):GET_TRIG_MODE")
+{
+	field(DESC, "Get the spectrometer trigger mode")
+	field(INP, "@qmini.proto get_trig_mode $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(PINI, "YES")
+    field(FLNK, "$(P):TRIG_MODE_RBV PP")
+}
+ 
+record(mbbo, "$(P):TRIG_MODE")
+{
+    field(DESC, "Spectrometer Trigger Mode")
+    field(SCAN, "Passive")
+    field(OMSL, "supervisory")
+    field(OUT, "$(P):SET_TRIG_MODE.VAL PP")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(TWVL, 2)
+    field(ZRST, "Free Run Start")
+    field(ONST, "Free Run End")
+    field(TWST, "HW Trigger")
+}
+
+record(mbbi, "$(P):TRIG_MODE_RBV")
+{
+    field(DESC, "Spectrometer Trigger Mode")
+    field(SCAN, "Passive")
+    field(INP, "$(P):GET_TRIG_MODE.VAL NPP")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(TWVL, 2)
+    field(ZRST, "Free Run Start")
+    field(ONST, "Free Run End")
+    field(TWST, "HW Trigger")
+}
+
+record(longin, "$(P):GET_TRIG_DELAY")
+{
+    field(DESC, "Current Spectrometer Trigger Delay")
+    field(INP, "@qmini.proto get_trig_delay $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+	field(PINI, "YES")
+    field(EGU, "us")
+}
+
+record(longout, "$(P):SET_TRIG_DELAY")
+{
+    field(DESC, "Set Spectrometer Trigger Delay")
+    field(OUT, "@qmini.proto set_trig_delay $(PORT)")
+	field(DTYP, "stream")
+    field(OMSL, "closed_loop")
+    field(EGU, "us")
+    field(FLNK, "$(P):GET_TRIG_DELAY PP")
+}
+
+record(longin, "$(P):GET_IO_CONFIG")
+{
+    field(DESC, "Spectrometer IO Config")
+    field(INP, "@qmini.proto get_io_conf($(P)) $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+	field(PINI, "YES")
+}
+
+record(longout, "$(P):SET_IO_CONFIG")
+{
+    field(DESC, "Spectrometer IO Config")
+    field(OUT, "@qmini.proto set_io_conf($(P)) $(PORT)")
+	field(DTYP, "stream")
+	field(SCAN, "Passive")
+    field(FLNK, "$(P):GET_IO_CONFIG PP")
+}
+
+record(mbbo, "$(P):SET_TRIG_PIN")
+{
+    field(DESC, "Set spectrometer trigger pin")
+    field(SCAN, "Passive")
+    field(OMSL, "supervisory")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(TWVL, 2)
+    field(THVL, 3)
+    field(ZRST, "Pin 0")
+    field(ONST, "Pin 1")
+    field(TWST, "Pin 2")
+    field(THST, "Pin 3")
+    field(FLNK, "$(P):SET_IO_CONFIG PP")
+}
+
+record(mbbi, "$(P):TRIG_PIN_RBV")
+{
+    field(DESC, "Spectrometer trigger pin")
+    field(SCAN, "Passive")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(TWVL, 2)
+    field(THVL, 3)
+    field(ZRST, "Pin 0")
+    field(ONST, "Pin 1")
+    field(TWST, "Pin 2")
+    field(THST, "Pin 3")
+}
+
+record(mbbo, "$(P):SET_TRIG_EDGE")
+{
+    field(DESC, "Set spectrometer trigger edge")
+    field(SCAN, "Passive")
+    field(OMSL, "supervisory")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(ZRST, "Falling")
+    field(ONST, "Rising")
+    field(FLNK, "$(P):SET_IO_CONFIG PP")
+}
+
+record(mbbi, "$(P):TRIG_EDGE_RBV")
+{
+    field(DESC, "Spectrometer trigger edge RBV")
+    field(SCAN, "Passive")
+    field(ZRVL, 0)
+    field(ONVL, 1)
+    field(ZRST, "Falling")
+    field(ONST, "Rising")
+}
+
+record(bo, "$(P):ADJUST_OFFSET")
+{
+    field(DESC, "Adjust offset with dark and offset pixels")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B0")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):CORRECT_NONLINEARITY")
+{
+    field(DESC, "Correct nonlinearity of intensity axis")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):REMOVE_BAD_PIXELS")
+{
+    field(DESC, "Remove permanently bad pixels")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B2")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):SUBTRACT_DARK")
+{
+    field(DESC, "Obtain dark spectrum and subtract from data")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B3")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):REMOVE_TEMP_BAD_PIXELS")
+{
+    field(DESC, "Remove single pixel spikes")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B4")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+### Not yet implemented in spectrometer firmware
+#record(bo, "$(P):COMP_STRAY_LIGHT")
+#{
+#    field(DESC, "Estimate and compensate for stray light")
+#    field(SCAN, "Passive")
+#    field(OUT, "$(P):PROCESSING_STEPS.B5")
+#    field(ZNAM, "No")
+#    field(ONAM, "Yes")
+#    field(FLNK, "$(P):PROCESSING_STEPS PP")
+#}
+
+record(bo, "$(P):NORMALIZE_EXPOSURE")
+{
+    field(DESC, "Normalize spectrum to exposure time of 1 second")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B6")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):SENSITIVITY_CAL")
+{
+    field(DESC, "Correct for spectral sensitivity")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B7")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):CORRECT_PRNU")
+{
+    field(DESC, "Correct for photoresponse non-uniformity")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B8")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):ADDITIONAL_FILTERING")
+{
+    field(DESC, "Apply additional filtering for device specific properties")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.B9")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+record(bo, "$(P):SCALE_TO_16BIT")
+{
+    field(DESC, "Scale values to 0-65534 and clip larger values to 65535")
+    field(SCAN, "Passive")
+    field(OUT, "$(P):PROCESSING_STEPS.BA")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):PROCESSING_STEPS PP")
+}
+
+#record(calc, "$(P):PROCESSING_STEPS")
+#{
+#    field(DESC, "Set the spectrometer processing steps")
+#    field(INPA, "$(P):ADJUST_OFFSET NPP")
+#    field(INPB, "$(P):CORRECT_NONLINEARITY NPP")
+#    field(INPC, "$(P):REMOVE_BAD_PIXELS NPP")
+#    field(INPD, "$(P):SUBTRACT_DARK NPP")
+#    field(INPE, "$(P):REMOVE_TEMP_BAD_PIXELS NPP")
+#    field(INPF, "0") # Straylight not implemented yet
+#    field(INPG, "$(P):NORMALIZE_EXPOSURE NPP")
+#    field(INPH, "$(P):SENSITIVITY_CAL NPP")
+#    field(INPI, "$(P):CORRECT_PRNU NPP")
+#    field(INPJ, "$(P):ADDITIONAL_FILTERING NPP")
+#    field(INPK, "$(P):SCALE_TO_16BIT NPP")
+#    field(CALC, "(A*1)+(B*2)+(C*4)+(D*8)+(E*16)+(F*32)+(G*64)+(H*128)+(I*256)+(J*512)+(K*1024)")
+#    field(SCAN, "Passive")
+#    field(FLNK, "$(P):SET_PROCESSING_STEPS PP")
+#}
+
+record(mbboDirect, "$(P):PROCESSING_STEPS")
+{
+    field(DESC, "Get the spectrometer processing steps")
+    field(SCAN, "Passive")
+    field(OMSL, "supervisory")
+    field(OUT, "$(P):SET_PROCESSING_STEPS PP")
+    field(SHFT, "11")
+    field(FLNK, "$(P):SET_PROCESSING_STEPS PP")
+}
+
+record(longout, "$(P):SET_PROCESSING_STEPS")
+{
+    field(DESC, "Set the spectrometer processing steps")
+    field(SCAN, "Passive")
+    field(DOL, "$(P):PROCESSING_STEPS NPP")
+    field(OUT, "@qmini.proto set_processing_steps $(PORT)")
+	field(DTYP, "stream")
+    field(OMSL, "closed_loop")
+    #field(OMSL, "supervisory")
+    field(DRVL, "0") 
+    field(DRVH, "2047")
+    #field(FLNK, "$(P):PROCESSING_STEPS_2 PP")
+    field(FLNK, "$(P):GET_PROCESSING_STEPS PP")
+}
+
+record(longin, "$(P):GET_PROCESSING_STEPS")
+{
+    field(DESC, "Get the spectrometer processing steps")
+    field(SCAN, "Passive")
+	field(INP, "@qmini.proto get_processing_steps $(PORT)")
+	field(DTYP, "stream")
+    field(PINI, "YES")
+    field(FLNK, "$(P):PROCESSING_STEPS_RBV PP")
+}
+
+record(mbbiDirect, "$(P):PROCESSING_STEPS_RBV")
+{
+    field(DESC, "Get the spectrometer processing steps")
+    field(SCAN, "Passive")
+    field(INP, "$(P):GET_PROCESSING_STEPS.VAL NPP")
+    field(SHFT, "11")
+    field(FLNK, "$(P):ADJUST_OFFSET_RBV PP")
+}
+
+record(bi, "$(P):ADJUST_OFFSET_RBV")
+{
+    field(DESC, "Adjust offset RBV")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B0 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):CORRECT_NONLINEARITY_RBV PP")
+}
+
+record(bi, "$(P):CORRECT_NONLINEARITY_RBV")
+{
+    field(DESC, "Correct nonlinearity RBV")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B1 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):REMOVE_BAD_PIXELS_RBV PP")
+}
+
+record(bi, "$(P):REMOVE_BAD_PIXELS_RBV")
+{
+    field(DESC, "Remove permanently bad pixels RBV")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B2 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):SUBTRACT_DARK_RBV PP")
+}
+
+record(bi, "$(P):SUBTRACT_DARK_RBV")
+{
+    field(DESC, "Obtain dark spectrum and subtract from data")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B3 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):REMOVE_TEMP_BAD_PIXELS_RBV PP")
+}
+
+record(bi, "$(P):REMOVE_TEMP_BAD_PIXELS_RBV")
+{
+    field(DESC, "Remove single pixel spikes")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B4 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):NORMALIZE_EXPOSURE_RBV PP")
+}
+
+### Not yet implemented in spectrometer firmware
+#record(bo, "$(P):COMP_STRAY_LIGHT")
+#{
+#    field(DESC, "Estimate and compensate for stray light")
+#    field(SCAN, "Passive")
+#    field(ZNAM, "No")
+#    field(ONAM, "Yes")
+#    field(FLNK, "$(P):PROCESSING_STEPS PP")
+#}
+
+record(bi, "$(P):NORMALIZE_EXPOSURE_RBV")
+{
+    field(DESC, "Normalize spectrum to exposure time of 1 second")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B6 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):SENSITIVITY_CAL_RBV PP")
+}
+
+record(bi, "$(P):SENSITIVITY_CAL_RBV")
+{
+    field(DESC, "Correct for spectral sensitivity")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B7 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):CORRECT_PRNU_RBV PP")
+}
+
+record(bi, "$(P):CORRECT_PRNU_RBV")
+{
+    field(DESC, "Correct for photoresponse non-uniformity")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B8 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):ADDITIONAL_FILTERING_RBV PP")
+}
+
+record(bi, "$(P):ADDITIONAL_FILTERING_RBV")
+{
+    field(DESC, "Apply additional filtering for device specific properties")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.B9 NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(FLNK, "$(P):SCALE_TO_16BIT_RBV PP")
+}
+
+record(bi, "$(P):SCALE_TO_16BIT_RBV")
+{
+    field(DESC, "Scale values to 0-65534 and clip larger values to 65535")
+    field(SCAN, "Passive")
+    field(INP, "$(P):PROCESSING_STEPS_RBV.BA NPP")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
