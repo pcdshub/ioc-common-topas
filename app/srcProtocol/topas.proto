@@ -5,17 +5,24 @@ ReadTimeout   =  100;
 WriteTimeout  =  100;
 ExtraInput    = Ignore;
 
-SETWL   { out "PUTV:Optical/WavelengthControl/SetWavelengthUsingAnyInteraction:IGNORE"; out "%g"; }
+SETWL   { out "PUTV:Optical/WavelengthControl/SetWavelengthUsingAnyInteraction"; out "%g"; }
 GETWL   { out "GET:Optical/WavelengthControl/Output/Wavelength"; in "%g"; }
-GETWSIP { out "GET:Optical/WavelengthControl/Output,IsWavelengthSettingInProgress"; in "%d" }
+GETINTER{ out "GET:Optical/WavelengthControl/Output/Interaction"; in "\"%[^\"]\""; }
+GETWSIP { out "GET:Optical/WavelengthControl/Output:IsWavelengthSettingInProgress";
+	  in "IsWavelengthSettingInProgress %{false|true}"; }
 
-ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen", in "%{false|true}" }
-ISILOPEN{ out "GET:ShutterInterlock/IsInterlockOpen", in "%{false|true}" }
-OPENSH  { out "PUT:ShutterInterlock/OpenShutter:I" }
-CLOSESH { out "PUT:ShutterInterlock/CloseShutter:I" }
+ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in "%{false|true}" }
+ISILOPEN{ out "GET:ShutterInterlock/IsInterlockOpen"; in "%{false|true}" }
+OPENSH  { out "PUT:ShutterInterlock/OpenShutter" }
+CLOSESH { out "PUT:ShutterInterlock/CloseShutter" }
 
-SETTPU  { out "PUTV:Motors/TargetPositionInUnits?id=\$1:I"; out "%g"; }
+SETTPU  { out "PUTV:Motors/TargetPositionInUnits?id=\$1"; out "%g"; }
 GETTPU  { out "GET:Motors/TargetPositionInUnits?id=\$1"; in "%g"; }
 GETAPU  { out "GET:Motors/ActualPositionInUnits?id=\$1"; in "%g"; }
-STOP    { out "POST:Motors/Stop?id=\$1:I"; }
-STOPALL { out "POST:Motors/StopAll:I"; }
+STOP    { out "POST:Motors/Stop?id=\$1"; }
+STOPALL { out "POST:Motors/StopAll"; }
+
+SETWLUI { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessage";
+	  out "{\"Interaction\": \"%(\$1:INTERACTION)s\", \"Wavelength\": %g }";
+	  in  "IsSuccess %{false|true}";
+	  in  "ErrorMessage \"%(\$1:ERRORMESSAGE)s\""; }

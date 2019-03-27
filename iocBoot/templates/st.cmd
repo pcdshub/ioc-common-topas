@@ -5,9 +5,8 @@
 epicsEnvSet( "ENGINEER" , "$$ENGINEER" )
 epicsEnvSet( "IOCSH_PS1", "$$IOCNAME>" )
 epicsEnvSet( "IOCENAME",  "$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")" )
-epicsEnvSet( "IOCPVROOT", "$$IF(IOCPVROOT,$$IOCPVROOT,$(IOCENAME)")
+epicsEnvSet( "IOCPVROOT", "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$(IOCENAME)$$ENDIF(IOCPVROOT)")
 epicsEnvSet( "LOCATION",  "$$IF(LOCATION,$$LOCATION,$$IOCPVROOT)")
-epicsEnvSet( "BASE_NAME", "$$NAME"     )
 epicsEnvSet( "IOC_TOP",   "$$IOCTOP"   )
 epicsEnvSet( "TOP",       "$$TOP"      )
 epicsEnvSet( "STREAM_PROTOCOL_PATH", "$(IOC_TOP)/app/srcProtocol" )
@@ -35,24 +34,27 @@ drvAsynCurlJSONPortConfigure(TOPAS$$INDEX, "$$URL")
 #define ASYN_TRACEIO_FILTER  0x0004
 #define ASYN_TRACEIO_DRIVER  0x0008
 #define ASYN_TRACE_FLOW      0x0010
-$$IF(DEBUG,,#)asynSetTraceMask( "$(USBPORT)", 0, 0x19) # log everything
+$$IF(DEBUG,,#)asynSetTraceMask( "TOPAS$$INDEX", 0, 0x19) # log everything
 #define ASYN_TRACEIO_ASCII  0x0001
 #define ASYN_TRACEIO_ESCAPE 0x0002
 #define ASYN_TRACEIO_HEX    0x0004
-$$IF(DEBUG,,#)asynSetTraceIOMask( "$(USBPORT)", 0, 2)  # Escape the strings.
+$$IF(DEBUG,,#)asynSetTraceIOMask( "TOPAS$$INDEX", 0, 2)  # Escape the strings.
 
 ## Asyn record support
-dbLoadRecords( "db/asynRecord.db","P=$(BASE_NAME),R=,PORT=TOPAS$$INDEX,ADDR=0,OMAX=0,IMAX=0")
+dbLoadRecords( "db/asynRecord.db","P=$$BASE,R=,PORT=TOPAS$$INDEX,ADDR=0,OMAX=0,IMAX=0")
 $$ENDLOOP(TOPAS)
 
 #------------------------------------------------------------------------------
 # Load record instances
 
 $$LOOP(TOPAS)
-dbLoadRecords( "db/topas.db",              	"P=$(BASE_NAME), PORT=TOPAS$$INDEX" )
+dbLoadRecords( "db/topas.db",              	"BASE=$$BASE, PORT=TOPAS$$INDEX" )
 $$ENDLOOP(TOPAS)
+$$LOOP(MOTOR)
+dbLoadRecords( "db/topas_motor.db", "BASE=$$BASE,PORT=TOPAS$$PORT,INDEX=$$INDEX,NAME=$$NAME,EGU=$$EGU,LOPR=$$LOPR,HOPR=$$HOPR" )
+$$ENDLOOP(MOTOR)
 dbLoadRecords( "db/iocSoft.db",			"IOC=$(IOCENAME)" )
-dbLoadRecords( "db/save_restoreStatus.db",	"P=$(IOCPVROOT)" )
+dbLoadRecords( "db/save_restoreStatus.db",	"P=$(IOCPVROOT):" )
 
 #------------------------------------------------------------------------------
 # Setup autosave

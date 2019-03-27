@@ -9,15 +9,15 @@ include $(TOP)/configure/CONFIG
 # Path to "NON EPICS" External PACKAGES: USER INCLUDES
 #======================================================
 
-# Support Perl C regular expression library
-USR_INCLUDES += -I$(PCRE_INCLUDE)
+# Support Perl C regular expression library and rapidjson
+USR_INCLUDES += -I$(PCRE_INCLUDE) -I/reg/g/psdm/sw/conda2/inst/envs/ps-2.0.0/include
 
 #======================================================
 # PATH TO "NON EPICS" EXTERNAL PACKAGES: USER LIBRARIES
 #======================================================
 
 pcre_DIR = $(PCRE_LIB)
-curl_DIR = /reg/g/home/mcbrowne/rhel7/lib
+curl_DIR = /opt/libcurl/lib
 
 # ======================================================
 # LINK "NON EPICS" EXTERNAL PACKAGE LIBRARIES STATICALLY
@@ -54,7 +54,7 @@ topas_SRCS_DEFAULT += topasMain.cpp
 # Add locally compiled object code
 #topas_SRCS += dbSubExample.c
 
-topas_SRCS += drvAsynCurlJSONPort.c
+topas_SRCS += drvAsynCurlJSONPort.cpp
 
 topas_LIBS += devIocStats
 topas_LIBS += autosave

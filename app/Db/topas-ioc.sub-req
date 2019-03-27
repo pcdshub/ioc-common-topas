@@ -16,10 +16,3 @@ file autosave_iocAdmin.tpl-req
 		IOC=$(IOC)
 	}
 }
-
-file topas.tpl-req
-{
-        {
-                P=$(P)
-        }
-}

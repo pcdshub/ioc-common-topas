@@ -1,0 +1,23 @@
+record(ao, "$(BASE):m$(INDEX):SET_POSITION") {
+    field(DESC, "$(NAME)")
+    field(EGU,  "$(EGU)")
+    field(LOPR, "$(LOPR=0)")
+    field(HOPR, "$(HOPR=0)")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto SETTPU($(INDEX)) $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(ai, "$(BASE):m$(INDEX):CUR_POSITION") {
+    field(DESC, "$(NAME)")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto GETAPU($(INDEX)) $(PORT)")
+#   field(PINI, "YES")
+#   field(SCAN, "1 second")
+}
+
+record(bo, "$(BASE):m$(INDEX):STOP") {
+    field(DESC, "$(NAME) Stop")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto STOP($(INDEX)) $(PORT)")
+}

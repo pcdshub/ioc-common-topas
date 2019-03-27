@@ -1,10 +1,15 @@
 # IOC archive file
-## Replace CXI:MOB:IOC:DDG with the PV prefix used for
-## iocAdmin PV's on this IOC
 
-# Generate IOC archive request 
 file topas-ioc.archive
 {
-	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)", BASE_NAME = "$$NAME" }
+	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)" }
 }
 
+file topas.tpl-arch
+{
+	pattern
+	{ BASE }
+$$LOOP(TOPAS)
+	{ "$$BASE" }
+$$ENDLOOP(TOPAS)
+}

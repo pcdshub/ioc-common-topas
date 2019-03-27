@@ -1,10 +1,15 @@
-# topas IOC instance archive file
-
-# Generate autosave PV list for IOC specific PV's
+# topas IOC instance autosave file
 
 file topas-ioc.req
 {
-	{
-		P="$$(NAME)"
-	}
+	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)" }
+}
+
+file topas.tpl-req
+{
+	pattern
+	{ BASE }
+$$LOOP(TOPAS)
+	{ "$$BASE" }
+$$ENDLOOP(TOPAS)
 }

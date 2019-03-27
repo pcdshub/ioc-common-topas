@@ -1,0 +1,85 @@
+record(ao, "$(BASE):SET_WAVELENGTH") {
+    field(DESC, "Set Wavelength")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto SETWL $(PORT)")
+    field(OMSL, "supervisory")
+    field(FLNK, "$(BASE):WAVELENGTH")
+}
+
+record(ai, "$(BASE):WAVELENGTH") {
+    field(DESC, "Current Wavelength")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto GETWL $(PORT)")
+    field(PINI, "YES")
+    field(FLNK, "$(BASE):INTERACTION")
+}
+
+record(stringin, "$(BASE):INTERACTION") {
+    field(DESC, "Current Wavelength")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto GETINTER $(PORT)")
+}
+
+record(bi, "$(BASE):IS_SHUTTER_OPEN") {
+    field(DESC, "Shutter State")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto ISSHOPEN $(PORT)")
+#   field(SCAN, "1 second")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(BASE):IS_INTERLOCK_OPEN") {
+    field(DESC, "Interlock State")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto ISILOPEN $(PORT)")
+#   field(SCAN, "1 second")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bo, "$(BASE):SHUTTER_CMD") {
+    field(DESC, "Shutter Control")
+    field(OMSL, "supervisory")
+    field(ZNAM, "Close")
+    field(ONAM, "Open")
+    field(FLNK, "$(BASE):SHUTTER_CALC")
+}
+
+record(calcout, "$(BASE):SHUTTER_CALC") {
+    field(INPA, "$(BASE):SHUTTER_CMD")
+    field(CALC, "A+1")
+    field(OOPT, "Every Time")
+    field(DOPT, "Use CALC")
+    field(OUT,  "$(BASE):DO_SHUTTER.SELN")
+    field(FLNK, "$(BASE):DO_SHUTTER")
+}
+
+record(fanout, "$(BASE):DO_SHUTTER") {
+    field(DESC, "Shutter Control")
+    field(SELM, "Specified")
+    field(LNK1, "$(BASE):CLOSE_SHUTTER")
+    field(LNK2, "$(BASE):OPEN_SHUTTER")
+}
+
+record(bo, "$(BASE):CLOSE_SHUTTER") {
+    field(DESC, "Close Shutter")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto CLOSESH $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(bo, "$(BASE):OPEN_SHUTTER") {
+    field(DESC, "OPEN Shutter")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto OPENSH $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(bo, "$(BASE):STOP_ALL") {
+    field(DESC, "Stop All Motors")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto STOPALL $(PORT)")
+}

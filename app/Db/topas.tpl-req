@@ -1,1 +1,2 @@
 # Autosave list for TOPAS-HP
+$(BASE):SET_WAVELENGTH
