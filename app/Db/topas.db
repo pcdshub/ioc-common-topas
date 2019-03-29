@@ -1,30 +1,77 @@
 record(ao, "$(BASE):SET_WAVELENGTH") {
     field(DESC, "Set Wavelength")
-    field(DTYP, "stream")
-    field(OUT,  "@topas.proto SETWL $(PORT)")
-    field(OMSL, "supervisory")
-    field(FLNK, "$(BASE):WAVELENGTH")
+    field(FLNK, "$(BASE):WL_CALC")
 }
 
+record(calcout, "$(BASE):WL_CALC") {
+    field(INPA, "$(BASE):DESIRED_INTERACTION")
+    field(CALC, "(A==0)?1:2")
+    field(OOPT, "Every Time")
+    field(DOPT, "Use CALC")
+    field(OUT,  "$(BASE):DO_WL.SELN")
+    field(FLNK, "$(BASE):DO_WL")
+}
+
+record(fanout, "$(BASE):DO_WL") {
+    field(DESC, "Wavelength Setter")
+    field(SELM, "Specified")
+    field(LNK1, "$(BASE):DO_WL_ANY")
+    field(LNK2, "$(BASE):DO_WL_DES")
+}
+
+record(ao, "$(BASE):DO_WL_ANY") {
+    field(DESC, "Set Wavelength Using Any Interaction")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto SETWL($(BASE)) $(PORT)")
+    field(OMSL, "supervisory")
+    field(FLNK, "$(BASE):WL_SET_IN_PROGRESS")
+}
+
+record(ao, "$(BASE):DO_WL_DES") {
+    field(DESC, "Set Wavelength With One Interaction")
+    field(DTYP, "stream")
+    field(OUT,  "@topas.proto SETWLI($(BASE)) $(PORT)")
+    field(OMSL, "supervisory")
+    field(FLNK, "$(BASE):WL_SET_IN_PROGRESS")
+}
+
+# Automatically written by SETWL/SETWLI protocol
+record(bi, "$(BASE):WL_SUCCESS") {
+    field(DESC, "Wavelength Setting Success")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+# Automatically written by SETWL/SETWLI protocol
+record(stringin, "$(BASE):WL_ERROR") {
+    field(DESC, "Wavelength Setting Error")
+}
+
+record(bi, "$(BASE):WL_IN_PROGRESS") {
+    field(DESC, "Wavelength is being set?")
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto GETWSIP($(BASE)) $(PORT)")
+    field(SCAN,  ".5 second")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+# Automatically written by GETWSIP protocol
 record(ai, "$(BASE):WAVELENGTH") {
     field(DESC, "Current Wavelength")
-    field(DTYP, "stream")
-    field(INP,  "@topas.proto GETWL $(PORT)")
-    field(PINI, "YES")
-    field(FLNK, "$(BASE):INTERACTION")
 }
 
+# Automatically written by GETWSIP protocol
 record(stringin, "$(BASE):INTERACTION") {
-    field(DESC, "Current Wavelength")
-    field(DTYP, "stream")
-    field(INP,  "@topas.proto GETINTER $(PORT)")
+    field(DESC, "Current Interaction")
 }
 
 record(bi, "$(BASE):IS_SHUTTER_OPEN") {
     field(DESC, "Shutter State")
     field(DTYP, "stream")
     field(INP,  "@topas.proto ISSHOPEN $(PORT)")
-#   field(SCAN, "1 second")
+    field(SCAN, ".5 second")
     field(PINI, "YES")
     field(ZNAM, "No")
     field(ONAM, "Yes")
@@ -34,7 +81,7 @@ record(bi, "$(BASE):IS_INTERLOCK_OPEN") {
     field(DESC, "Interlock State")
     field(DTYP, "stream")
     field(INP,  "@topas.proto ISILOPEN $(PORT)")
-#   field(SCAN, "1 second")
+    field(SCAN, ".5 second")
     field(PINI, "YES")
     field(ZNAM, "No")
     field(ONAM, "Yes")
@@ -72,7 +119,7 @@ record(bo, "$(BASE):CLOSE_SHUTTER") {
 }
 
 record(bo, "$(BASE):OPEN_SHUTTER") {
-    field(DESC, "OPEN Shutter")
+    field(DESC, "Open Shutter")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto OPENSH $(PORT)")
     field(OMSL, "supervisory")
@@ -82,4 +129,12 @@ record(bo, "$(BASE):STOP_ALL") {
     field(DESC, "Stop All Motors")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto STOPALL $(PORT)")
+}
+
+record(mbbo, "$(BASE):DESIRED_INTERACTION") {
+    field(DESC, "Desired Interaction")
+    field(OMSL, "supervisory")
+    field(DTYP, "Soft Channel")
+    field(ZRVL, "0")
+    field(ZRST, "Any")
 }

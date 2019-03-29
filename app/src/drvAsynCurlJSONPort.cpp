@@ -56,7 +56,7 @@ typedef struct cjAsynPort {
     int            fcnt;
     int            fcur;
     struct curl_slist *headers;
-    rapidjson::Document d;
+    rapidjson::Document *d;
 } cjAsynPort_t;
 
 static asynStatus
@@ -143,7 +143,7 @@ static size_t appendMemoryCallback(void *contents, size_t size, size_t nmemb, vo
 
 static asynStatus parseRequest(cjAsynPort_t *pasyn, asynUser *pasynUser)
 {
-    char *s;
+    char *s, *t;
     asynStatus status;
 
     if ((s = index(pasyn->outbuf, ':')) == NULL) {
@@ -166,24 +166,26 @@ static asynStatus parseRequest(cjAsynPort_t *pasyn, asynUser *pasynUser)
                   pasyn->outbuf);
         return asynError;
     }
-    curl_easy_reset(pasyn->dev);
-    sprintf(pasyn->fullURL, "%s/%s", pasyn->baseURL, s);
-    curl_easy_setopt(pasyn->dev, CURLOPT_URL, pasyn->fullURL);
-    curl_easy_setopt(pasyn->dev, CURLOPT_HTTPHEADER, pasyn->headers);
-    curl_easy_setopt(pasyn->dev, CURLOPT_VERBOSE, 1L);
 
     pasyn->fcnt = 0;
     pasyn->fcur = 0;
-    if ((s = index(s, ':')) != NULL) {
+    t = s;
+    if ((t = index(t, ':')) != NULL) {
         do {
-            *s++ = 0;
-            pasyn->filters[pasyn->fcnt++] = s;
-            s = index(s, ',');
-        } while (s);
+            *t++ = 0;
+            pasyn->filters[pasyn->fcnt++] = t;
+            t = index(t, ',');
+        } while (t);
     }
 
     pasyn->incnt = 0;
     pasyn->incur = -1;
+
+    curl_easy_reset(pasyn->dev);
+    sprintf(pasyn->fullURL, "%s/%s", pasyn->baseURL, s);
+    curl_easy_setopt(pasyn->dev, CURLOPT_URL, pasyn->fullURL);
+    curl_easy_setopt(pasyn->dev, CURLOPT_HTTPHEADER, pasyn->headers);
+    //curl_easy_setopt(pasyn->dev, CURLOPT_VERBOSE, 1L);
 
     switch (pasyn->req) {
     case REQ_GET:
@@ -265,9 +267,6 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         memcpy(pasyn->outbuf, data, numchars - 2); /* Strip off \r\n */
         pasyn->outbuf[numchars - 2] = 0;
         status = parseRequest(pasyn, pasynUser);
-        if (pasyn->state == STATE_RBODY) {
-            printf("Have %d bytes of body data: %s\n", pasyn->incnt, pasyn->rxbuf);
-        }
         break;
     case STATE_WBODY:
         /* Is this really the entire write?!? */
@@ -291,22 +290,22 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     return status;
 }
 
-static int parseJSON(rapidjson::Document &d, char *name, char *output)
+static int parseJSON(rapidjson::Document *d, char *name, char *output)
 {
     char *s = name, *t = NULL;
-    rapidjson::Value &v = d;
+    rapidjson::Value *v = d;
     do {
         t = index(s, '.');
         if (t)
             *t = 0;
-        if (!v.HasMember(s))
+        if (!v->HasMember(s))
             return -1;
-        v = v[s];
+        v = &(*v)[s];
         if (t)
             *t++ = '.';
         s = t;
     } while (s);
-    switch (v.GetType()) {
+    switch (v->GetType()) {
     case rapidjson::kNullType:
         sprintf(output, "%s null\r\n", name);
         break;
@@ -317,20 +316,21 @@ static int parseJSON(rapidjson::Document &d, char *name, char *output)
         sprintf(output, "%s true\r\n", name);
         break;
     case rapidjson::kStringType:
-        sprintf(output, "%s \"%s\"\r\n", name, v.GetString());
+        sprintf(output, "%s \"%s\"\r\n", name, v->GetString());
         break;
     case rapidjson::kNumberType:
         /* OK, this is kind of painful. */
-        if (v.IsDouble())
-            sprintf(output, "%s %lg\r\n", name, v.GetDouble());
-        else if (v.IsInt())
-            sprintf(output, "%s %d\r\n", name, v.GetInt());
-        else if (v.IsUint())
-            sprintf(output, "%s %u\r\n", name, v.GetUint());
-        else if (v.IsInt64())
-            sprintf(output, "%s %ld\r\n", name, v.GetInt64());
-        else if (v.IsUint64())
-            sprintf(output, "%s %lu\r\n", name, v.GetUint64());
+        if (v->IsDouble())
+            sprintf(output, "%s %.15lg\r\n", name, v->GetDouble());
+        else if (v->IsInt())
+            sprintf(output, "%s %d\r\n", name, v->GetInt());
+        else if (v->IsUint())
+            sprintf(output, "%s %u\r\n", name, v->GetUint());
+        else if (v->IsInt64())
+            sprintf(output, "%s %ld\r\n", name, v->GetInt64());
+        else if (v->IsUint64())
+            sprintf(output, "%s %lu\r\n", name, v->GetUint64());
+        break;
     case rapidjson::kObjectType:
     case rapidjson::kArrayType:
         /* We don't support returning objects or arrays!  Yet. */
@@ -354,7 +354,6 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
         return asynError;
     }
     *nbytesTransfered = 0;
-    printf("readIt: state = %d\n", pasyn->state);
     switch (pasyn->state) {
     case STATE_INIT:
     case STATE_WBODY:
@@ -363,22 +362,25 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     case STATE_RBODY:
         if (pasyn->incur == -1) { /* First time through the loop! */
             if (pasyn->fcnt) {    /* We're parsing JSON */
-                pasyn->d.Parse(pasyn->rawbuf);
-                if (pasyn->d.HasParseError()) {
+                pasyn->d->Parse(pasyn->rawbuf);
+                if (pasyn->d->HasParseError()) {
                     asynPrint(pasynUser, ASYN_TRACE_ERROR, 
                               "JSON Parse error: %s, location %d\n",
-                              rapidjson::GetParseError_En(pasyn->d.GetParseError()),
-                              (int)pasyn->d.GetErrorOffset());
+                              rapidjson::GetParseError_En(pasyn->d->GetParseError()),
+                              (int)pasyn->d->GetErrorOffset());
                     status = asynError;
                     break;
                 }
-                if (!pasyn->d.IsObject()) {
-                    asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-                              "Returned JSON is not an object!\n");
-                    status = asynError;
-                    break;
-                }
-                pasyn->incnt = 0;
+                if (!pasyn->d->IsObject()) {
+                    /* If we don't have a JSON object, just pass it through and hope @mismatch
+                       handles it. */
+                    pasyn->fcnt = 0;
+                    memcpy(pasyn->inbuf, pasyn->rawbuf, pasyn->incnt);
+                    pasyn->inbuf[pasyn->incnt++] = '\r';
+                    pasyn->inbuf[pasyn->incnt++] = '\n';
+                    pasyn->incur = 0;
+                } else
+                    pasyn->incnt = 0;
             } else {               /* We're just passing the body up to streamdevice */
                 if (pasyn->incnt == 0) { /* If we didn't read anything, we're done! */
                     pasyn->state = STATE_INIT;
@@ -410,8 +412,8 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
             *nbytesTransfered = maxchars;
             pasyn->incur += maxchars;
         }
-        asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, *nbytesTransfered,
-                    "read %d\n", *nbytesTransfered);
+        asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, (int)*nbytesTransfered,
+                    "read %d\n", (int)*nbytesTransfered);
         break;
     }
     if (gotEom)
@@ -484,6 +486,7 @@ cleanup(cjAsynPort_t *pasyn)
     if (pasyn) {
         free(pasyn->portName);
         free(pasyn->baseURL);
+        delete pasyn->d;
         if (pasyn->dev) {
             curl_easy_cleanup(pasyn->dev);
             pasyn->dev = NULL;
@@ -568,6 +571,7 @@ epicsShareFunc int drvAsynCurlJSONPortConfigure(const char *portName, char *base
     pasyn->headers = curl_slist_append(pasyn->headers, "Content-Type: application/json");
     pasyn->flags = STATE_INIT;
     pasyn->flags = 0;
+    pasyn->d = new rapidjson::Document();
 
     pasyn->common.interfaceType = asynCommonType;
     pasyn->common.pinterface  = (void *)&asynCommonMethods;

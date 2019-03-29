@@ -2,7 +2,7 @@
 
 file topas-ioc.req
 {
-	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)" }
+	{ IOC = "$$IOC_PV" }
 }
 
 file topas.tpl-req
@@ -12,4 +12,13 @@ file topas.tpl-req
 $$LOOP(TOPAS)
 	{ "$$BASE" }
 $$ENDLOOP(TOPAS)
+}
+
+file topas_motor.tpl-req
+{
+	pattern
+	{ BASE, ID }
+$$LOOP(MOTOR)
+	{ "$$BASE", "$$ID" }
+$$ENDLOOP(MOTOR)
 }

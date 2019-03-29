@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += topas.db topas_motor.db
+DB += topas.db topas_motor.db topas_inter.db
 
 #----------------------------------------------------
 # Create and install (or just install)
@@ -25,6 +25,7 @@ ARCHIVE += topas.tpl-arch
 #
 REQ += topas-ioc.req
 REQ += topas.tpl-req
+REQ += topas_motor.tpl-req
 
 # Nothing to build for autosave, just install from $AUTOSAVE/db
 DB_INSTALLS += $(AUTOSAVE)/db/save_restoreStatus.db

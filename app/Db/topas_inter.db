@@ -1,0 +1,20 @@
+record(stringout, "$(BASE):i$(ID):NAME") {
+    field(OUT, "$(BASE):DESIRED_INTERACTION.$(FN)")
+    field(VAL, "$(NAME)")
+    field(PINI, "YES")
+}
+
+record(longout, "$(BASE):i$(ID):VAL") {
+    field(OUT, "$(BASE):DESIRED_INTERACTION.$(FV)")
+    field(VAL, "$(ID)")
+    field(PINI, "YES")
+}
+
+record(ai, "$(BASE):i$(ID):MIN") {
+    field(VAL, "$(MIN)")
+}
+
+record(ai, "$(BASE):i$(ID):MAX") {
+    field(VAL, "$(MAX)")
+}
+

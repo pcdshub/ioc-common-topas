@@ -2,7 +2,7 @@
 
 file topas-ioc.archive
 {
-	{ IOC = "$$IF(IOCPVROOT)$$IOCPVROOT$$ELSE(IOCPVROOT)$$TRANSLATE(IOCNAME,"a-z_-","A-Z::")$$ENDIF(IOCPVROOT)" }
+	{ IOC = "$$IOC_PV" }
 }
 
 file topas.tpl-arch
