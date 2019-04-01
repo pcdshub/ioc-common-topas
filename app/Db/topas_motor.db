@@ -3,6 +3,24 @@ record(ao, "$(BASE):m$(ID):SET_POSITION") {
     field(EGU,  "$(EGU)")
     field(LOPR, "$(LOPR=0)")
     field(HOPR, "$(HOPR=0)")
+    field(FLNK, "$(BASE):m$(ID):PUSH_IF_CHANGE")
+}
+
+record(calcout, "$(BASE):m$(ID):PUSH_IF_CHANGE") {
+    field(INPA, "$(BASE):m$(ID):TARGET_POSITION")
+    field(INPB, "$(BASE):m$(ID):SET_POSITION")
+    field(CALC, "ABS(A-B)>0.000001")
+    field(OOPT, "When Non-zero")
+    field(DOPT, "Use OCAL")
+    field(OCAL, "B")
+    field(OUT,  "$(BASE):m$(ID):DO_SET PP")
+}
+
+record(ao, "$(BASE):m$(ID):DO_SET") {
+    field(DESC, "$(NAME)")
+    field(EGU,  "$(EGU)")
+    field(LOPR, "$(LOPR=0)")
+    field(HOPR, "$(HOPR=0)")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto SETTPU($(ID)) $(PORT)")
     field(OMSL, "supervisory")
@@ -10,6 +28,7 @@ record(ao, "$(BASE):m$(ID):SET_POSITION") {
 
 record(ao, "$(BASE):m$(ID):TWV") {
     field(DESC, "$(NAME) Tweak Value")
+    field(VAL,  "0.1")
 }
 
 record(calcout, "$(BASE):m$(ID):TWF") {
@@ -19,17 +38,17 @@ record(calcout, "$(BASE):m$(ID):TWF") {
     field(CALC, "A+B")
     field(OOPT, "Every Time")
     field(DOPT, "Use CALC")
-    field(OUT,  "$(BASE):SET_POSITION PP")
+    field(OUT,  "$(BASE):m$(ID):SET_POSITION PP")
 }
 
 record(calcout, "$(BASE):m$(ID):TWR") {
     field(DESC, "$(NAME) Tweak Reverse")		
     field(INPA, "$(BASE):m$(ID):SET_POSITION")
     field(INPB, "$(BASE):m$(ID):TWV")
-    field(CALC, "A+B")
+    field(CALC, "A-B")
     field(OOPT, "Every Time")
     field(DOPT, "Use CALC")
-    field(OUT,  "$(BASE):SET_POSITION PP")
+    field(OUT,  "$(BASE):m$(ID):SET_POSITION PP")
 }
 
 record(bo, "$(BASE):m$(ID):STOP") {
@@ -56,6 +75,7 @@ record(bi, "$(BASE):m$(ID):IS_HOMING") {
     field(DTYP, "stream")
     field(INP,  "@topas.proto STATUS($(ID),$(BASE)) $(PORT)")
     field(SCAN, ".5 second")
+    field(PINI, "YES")
     field(ZNAM, "No")
     field(ONAM, "Yes")
 }
@@ -77,6 +97,22 @@ record(bi, "$(BASE):m$(ID):HLIM") {
     field(DESC, "$(NAME) High Limit Hit")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+}
+
+# Written by the STATUS protocol.
+record(ai, "$(BASE):m$(ID):TARGET_POSITION") {
+    field(DESC, "$(NAME)")
+    field(EGU,  "$(EGU)")
+    field(FLNK, "$(BASE):m$(ID):PUSH_TARGET_TO_SET")
+}
+
+record(calcout, "$(BASE):m$(ID):PUSH_TARGET_TO_SET") {
+    field(DESC, "$(NAME) Update Set Position")		
+    field(INPA, "$(BASE):m$(ID):TARGET_POSITION")
+    field(CALC, "A")
+    field(OOPT, "On Change")
+    field(DOPT, "Use CALC")
+    field(OUT,  "$(BASE):m$(ID):SET_POSITION PP")
 }
 
 record(bi, "$(BASE):m$(ID):HOME_DONE") {

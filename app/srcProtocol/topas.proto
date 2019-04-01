@@ -31,11 +31,12 @@ GETAPU  { out "GET:Motors/ActualPositionInUnits?id=\$1"; in "%g"; }
 STOP    { out "POST:Motors/Stop?id=\$1"; }
 STOPALL { out "POST:Motors/StopAll"; }
 HOME    { out "POST:Motors/Home?id=\$1"; }
-STATUS  { out "GET:Motors/?id=\$1:IsHoming,ActualPositionInUnits,IsLeftSwitchPressed,IsRightSwitchPressed";
+STATUS  { out "GET:Motors/?id=\$1:IsHoming,ActualPositionInUnits,IsLeftSwitchPressed,IsRightSwitchPressed,TargetPositionInUnits";
           in "IsHoming %{false|true}";
           in "ActualPositionInUnits %(\$2:m\$1:CUR_POSITION)g";
           in "IsLeftSwitchPressed %(\$2:m\$1:LLIM){false|true}";
-          in "IsRightSwitchPressed %(\$2:m\$1:HLIM){false|true}"; }
+          in "IsRightSwitchPressed %(\$2:m\$1:HLIM){false|true}";
+          in "TargetPositionInUnits %(\$2:m\$1:TARGET_POSITION)g"; }
 STOPHOME{ out "POST:Motors/StopHoming?id=\$1"; }
 HOMESTAT{ out "GET:Motors/LastHomingProcedureResult?id=\$1:IsSuccessful,FailureDescription";
           in "IsSuccessful %{false|true}";
