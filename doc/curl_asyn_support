@@ -1,0 +1,133 @@
+This IOC uses a specially developed asyn driver which attempts to hide
+much of the complexitity of using libcurl to communicate to a web
+server using JSON requests and responses.  The general idea is that any
+request will be composed of one or two out statements: one for the request
+and other HTTP headers, and optionally one for the the message body.  The
+request will make clear what response is expected and moreove what parts of
+the response should be transmitted to asyn and stream device.
+
+A suitable asyn port can be created using:
+    drvAsynCurlJSONPortConfigure(PORTNAME, "http://BASE_URL")
+
+The request out statement will have the general form:
+    REQUEST:URL_TAIL:COMMA_SEPARATED_JSON_FIELDNAMES
+
+The REQUEST indicates what sort of HTTP request should be made:
+    GET requests a GET.
+    PUT requests a PUT without a message body.
+    PUTV requests a PUT with the next out providing the message body.
+    POST requests a POST without a message body.
+    POSTV requests a POST with the next out providing the message body.
+
+The URL_TAIL specifies the address to be communicated with, namely
+"http://BASE_URL/URL_TAIL".  (Yes, the module inserts a '/' here.)
+
+The COMMA_SEPARATED_JSON_FIELDNAMES (and final ':') is optional and
+indicates what parts of the JSON response are of interest.  If this
+is not specified for PUT, PUTV, POST, or POSTV, the response body is
+ignored.  However, since it is assumed that this is always of interest
+to a GET, if there are no fields, the response will be passed to asyn
+unchanged.
+
+Each name in the comma separated list produces a separate line of input,
+each line containing the name and its value in the returned JSON object,
+separated by a single space.  Hierarchical names are specified using a '.'
+to separate the levels.
+
+------------------------------------------------------------
+A few examples from the topas.proto file help to illustrate how this works.
+
+To read the shutter state, we have the following protocol:
+    ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in "%{false|true}" }
+
+This does a GET to the URL, and since no fields are specified, returns the
+entire response body back to asyn for processing.  In this case, the returned
+JSON will either be "true" or "false" (no quotes), and we parse this 
+accordingly.
+
+To read the wavelength status, we use the following protocol:
+    GETWSIP { out "GET:Optical/WavelengthControl/Output:IsWavelengthSettingInProgress,Wavelength,Interaction";
+	      in "IsWavelengthSettingInProgress %{false|true}";
+              in "Wavelength %(\$1:WAVELENGTH)g";
+              in "Interaction \"%(\$1:INTERACTION)[^\"]\""; }
+
+In this case, we do a GET, and the expected response is something like:
+
+    {"ActualInteraction":"SIG","IdlerWavelength":2080,"Interaction":"SIG",
+    "IsForBackgroundMeasurement":false,"IsUserActionCompleted":false,
+    "IsWaitingForUserAction":false,"IsWavelengthSettingInProgress":false,
+    "IsWavelengthStrict":true,"Messages":[],"MotorPositions":[{"Key":1,
+    "Value":-4.0797628302655},{"Key":2,"Value":2.9003125},{"Key":3,
+    "Value":55.159453198191443},{"Key":4,"Value":-4.3793283905115},{"Key":10,
+    "Value":3.5441044104410442},{"Key":11,"Value":0.971830985915493},
+    {"Key":9,"Value":0},{"Key":7,"Value":0},{"Key":8,"Value":0},{"Key":12,
+    "Value":0}],"OpticalDeviceOutputs":[{"Key":0,"Value":1300}],
+    "OtherDevicesOutputs":[],"SignalWavelength":1300,"Wavelength":1300,
+    "WavelengthSettingCompletionPart":1}
+
+Rather than attempt to parse this in streamdevice/asyn we have requested
+three fields, IsWavelengthSettingInProgress, Wavelength, and Interaction.
+So the input that the protocol will see will be:
+    IsWavelengthSettingInProgress false
+    Wavelength 1300
+    Interaction "SIG"
+
+Finally, to set the wavelength using a specific interaction, we use the
+following protocol:
+    SETWLI  { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessage"; 
+              out "{\"Interaction\": \"%(\$1:DESIRED_INTERACTION)s\", \"Wavelength\": %(\$1:SET_WAVELENGTH)g}";
+              in  "IsSuccess %(\$1:WL_SUCCESS){false|true}";
+              in  "ErrorMessage \"%(\$1:WL_ERROR)[^\"]\""; }
+
+Here, PUTV will cause a PUT to be generated, with the second out statement
+generating the message body.  In this case, we output a small JSON object
+with "Interaction" and "Wavelength" keys.  (This is output in one line!)
+The response returned will look something like:
+    {"ActualInteraction":"SIG","ErrorMessage":"",
+     "FailedAfterInteractionSelection":false,"IdlerWavelength":
+     2396.009975062344,"Interaction":"SIG","IsForBackgroundMeasurement":
+     false,"IsForIndirectUseOnly":false,"IsSuccess":true,"Messages":[],
+     "MotorPositions":[{"Key":1,"Value":{"ConflictOption":0,
+     "IsPositionInSteps":false,"Position":-4.9543101549274686,"Priority":0,
+     "DecidedBy":1}},{"Key":2,"Value":{"ConflictOption":0,"IsPositionInSteps":
+     false,"Position":2.816875,"Priority":0,"DecidedBy":1}},{"Key":3,
+     "Value":{"ConflictOption":0,"IsPositionInSteps":false,"Position":
+     54.655885366533091,"Priority":0,"DecidedBy":1}},{"Key":4,"Value":
+     {"ConflictOption":0,"IsPositionInSteps":false,"Position":
+     -5.5853465618102751,"Priority":0,"DecidedBy":1}},{"Key":10,"Value":
+     {"ConflictOption":0,"IsPositionInSteps":true,"Position":63,"Priority":
+     0,"DecidedBy":2}},{"Key":11,"Value":{"ConflictOption":0,
+     "IsPositionInSteps":true,"Position":1035,"Priority":-1000,
+     "DecidedBy":3}},{"Key":9,"Value":{"ConflictOption":0,
+     "IsPositionInSteps":true,"Position":0,"Priority":-1000,"DecidedBy":3}},
+     {"Key":7,"Value":{"ConflictOption":0,"IsPositionInSteps":false,
+     "Position":0,"Priority":-1000,"DecidedBy":3}},{"Key":8,"Value":
+     {"ConflictOption":0,"IsPositionInSteps":false,"Position":0,
+     "Priority":-1000,"DecidedBy":3}},{"Key":12,"Value":{"ConflictOption":
+     0,"IsPositionInSteps":true,"Position":0,"Priority":-1000,
+     "DecidedBy":3}}],"OpticalDeviceOutputs":[{"Key":0,"Value":1201}],
+     "OtherOpticalDevicesOutputs":[],"Output":1201,"PumpWavelength":
+     800,"SignalWavelength":1201}
+
+However, we have requested the IsSuccess and ErrorMessage fields, so the
+input passed to asyn/streamdevice will be:
+      IsSuccess true
+      ErrorMessage ""
+
+------------------------------------------------------------
+One possible future development would be to deal with lists/arrays in
+JSON objects.  For example, one might use an initial '[' in a field name
+to indicate that the name is that of an array, and use '|' to delimit the
+fields in each object that we are interested in.  So, to extend the last
+example, we might have a protocol that starts:
+    SETWLI  { out "PUTV:Optical/WavelengthControl/SetWavelength:MotorPositions.Key|Value.Position"; ... }
+
+Then this would generate input of the form:
+    MotorPositions.Key|Value.Position 1 -4.9543101549274686
+    MotorPositions.Key|Value.Position 2 2.816875
+    MotorPositions.Key|Value.Position 3 54.655885366533091
+    ...
+
+I/O Intr-scanned records could pick up each of these, and we would have to
+convince the SETWLI protocol to swallow all of the output so the next request
+will not get confused.
