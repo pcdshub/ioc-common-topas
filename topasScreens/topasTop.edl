@@ -1,0 +1,1010 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 621
+y 157
+w 577
+h 739
+font "helvetica-medium-r-12.0"
+ctlFont "helvetica-medium-r-12.0"
+btnFont "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 6
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 15
+ctlBgColor1 index 5
+ctlBgColor2 index 12
+topShadowColor index 1
+botShadowColor index 13
+title "$(BASE) TOPAS-HP"
+showGrid
+snapToGrid
+gridSize 4
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 4
+y 60
+w 300
+h 110
+lineColor index 3
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 40
+y 72
+w 76
+h 20
+font "helvetica-bold-r-12.0"
+fgColor index 20
+bgColor index 3
+useDisplayBg
+visPv "$(BASE):WL_SUCCESS"
+visMin "0"
+visMax "1"
+value {
+  "Set Failed!     "
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 0
+w 576
+h 40
+lineColor index 56
+fill
+fillColor index 56
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 8
+y 0
+w 228
+h 20
+font "helvetica-bold-r-14.0"
+fgColor index 14
+bgColor index 56
+value {
+  "TOPAS-HP $(BASE)"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 476
+y 8
+w 40
+h 24
+fgColor index 14
+bgColor index 3
+topShadowColor index 0
+botShadowColor index 14
+font "helvetica-medium-r-12.0"
+buttonLabel "IOC"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "iocScreens/ioc_soft.edl"
+}
+symbols {
+  0 "IOC=$(IOC)"
+}
+endObjectProperties
+
+# (Exit Button)
+object activeExitButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 524
+y 8
+w 40
+h 24
+fgColor index 14
+bgColor index 4
+topShadowColor index 1
+botShadowColor index 11
+label "Exit"
+font "helvetica-medium-r-12.0"
+3d
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 312
+y 60
+w 260
+h 110
+lineColor index 3
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 48
+w 124
+h 20
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 3
+value {
+  "Wavelength Control"
+}
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 72
+w 16
+h 16
+lineColor index 15
+fill
+fillColor index 15
+visPv "$(BASE):WL_SUCCESS"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 72
+w 16
+h 16
+lineColor index 20
+fill
+fillColor index 20
+visPv "$(BASE):WL_SUCCESS"
+visMin "0"
+visMax "1"
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 72
+w 16
+h 16
+lineColor index 35
+fill
+fillColor index 35
+visPv "$(BASE):WL_IN_PROGRESS"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 212
+y 68
+w 60
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Current"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 128
+y 68
+w 60
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Desired"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 8
+y 92
+w 100
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Wavelength (nm)"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 8
+y 116
+w 100
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Interaction"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 124
+y 92
+w 80
+h 18
+controlPv "$(BASE):SET_WAVELENGTH"
+format "decimal"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 25
+fgAlarm
+bgColor index 5
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 40
+smartRefresh
+fastUpdate
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 124
+y 116
+w 80
+h 20
+fgColor index 25
+bgColor index 5
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(BASE):DESIRED_INTERACTION"
+indicatorPv "$(BASE):DESIRED_INTERACTION"
+font "helvetica-medium-r-14.0"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 212
+y 92
+w 80
+h 20
+controlPv "$(BASE):WAVELENGTH"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 212
+y 116
+w 80
+h 20
+controlPv "$(BASE):INTERACTION"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 8
+y 140
+w 52
+h 20
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+font "helvetica-medium-r-12.0"
+buttonLabel "Help"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "topasHelp.edl"
+}
+symbols {
+  0 "BASE=$(BASE)"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 68
+y 140
+w 228
+h 20
+controlPv "$(BASE):WL_ERROR"
+font "helvetica-medium-r-12.0"
+fgColor index 14
+fgAlarm
+bgColor index 3
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 312
+y 48
+w 132
+h 20
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 3
+value {
+  "Shutter and Interlock"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 324
+y 104
+w 100
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Shutter Open:"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 324
+y 80
+w 96
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Interlock Open:"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 324
+y 130
+w 96
+h 20
+font "helvetica-medium-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Shutter Control:"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 432
+y 80
+w 100
+h 20
+controlPv "$(BASE):IS_INTERLOCK_OPEN"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 432
+y 104
+w 100
+h 20
+controlPv "$(BASE):IS_SHUTTER_OPEN"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Choice Button)
+object activeChoiceButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 432
+y 128
+w 100
+h 20
+fgColor index 14
+bgColor index 5
+selectColor index 5
+inconsistentColor index 12
+topShadowColor index 1
+botShadowColor index 13
+controlPv "$(BASE):SHUTTER_CMD"
+indicatorPv "$(BASE):SHUTTER_CMD"
+font "helvetica-medium-r-12.0"
+orientation "horizontal"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 4
+y 20
+w 188
+h 20
+controlPv "$(IOC):TOD"
+font "helvetica-medium-r-12.0"
+fgColor index 14
+fgAlarm
+bgColor index 56
+limitsFromDb
+nullColor index 0
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 40
+y 72
+w 40
+h 20
+font "helvetica-bold-r-12.0"
+fgColor index 15
+bgColor index 0
+useDisplayBg
+visPv "$(BASE):WL_SUCCESS"
+visMin "1"
+visMax "2"
+value {
+  "OK"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 176
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m1"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 576
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m6"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 256
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m2"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 656
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m7"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 336
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m3"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 176
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m8"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 416
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m4"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 256
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m9"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 8
+y 496
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m5"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 336
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m10"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 496
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m12"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 416
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m11"
+}
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 292
+y 576
+w 278
+h 74
+fgColor index 14
+bgColor index 5
+topShadowColor index 1
+botShadowColor index 13
+displaySource "menu"
+filePv "LOC\\\\xxx=0"
+sizeOfs 5
+numDsps 1
+displayFileName {
+  0 "topasMotor.edl"
+}
+symbols {
+  0 "MOTOR=$(BASE):m13"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 40
+y 72
+w 76
+h 20
+font "helvetica-bold-r-12.0"
+fgColor index 35
+bgColor index 3
+visPv "$(BASE):WL_IN_PROGRESS"
+visMin "1"
+visMax "2"
+value {
+  "In Progress     "
+}
+endObjectProperties
+

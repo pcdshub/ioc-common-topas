@@ -1,0 +1,421 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 223
+y 412
+w 274
+h 70
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-18.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 14
+ctlFgColor2 index 0
+ctlBgColor1 index 0
+ctlBgColor2 index 14
+topShadowColor index 0
+botShadowColor index 14
+title "$(MOTOR)"
+showGrid
+snapToGrid
+gridSize 4
+disableScroll
+endScreenProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 46
+w 77
+h 16
+font "helvetica-bold-r-14.0"
+fgColor index 20
+bgColor index 0
+useDisplayBg
+visPv "$(MOTOR):HOME_DONE"
+visMin "0"
+visMax "1"
+value {
+  "Not Homed"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 24
+w 84
+h 20
+font "helvetica-bold-r-10.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "$(MOTOR)"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 4
+y 4
+w 96
+h 20
+controlPv "$(MOTOR):SET_POSITION.DESC"
+font "helvetica-bold-r-12.0"
+fgColor index 25
+bgColor index 0
+useDisplayBg
+editable
+nullColor index 0
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 232
+y 4
+w 40
+h 18
+fgColor index 21
+onColor index 4
+offColor index 4
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(MOTOR):STOP.PROC"
+pressValue "1"
+onLabel "STOP"
+offLabel "STOP"
+3d
+useEnumNumeric
+font "helvetica-bold-r-10.0"
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 128
+y 4
+w 50
+h 20
+controlPv "$(MOTOR):CUR_POSITION"
+font "courier-medium-r-10.0"
+fgColor index 15
+fgAlarm
+bgColor index 12
+motifWidget
+precision 3
+nullColor index 18
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 184
+y 4
+w 32
+h 20
+controlPv "$(MOTOR):SET_POSITION.EGU"
+fgColor index 14
+bgColor index 0
+font "courier-medium-r-12.0"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 128
+y 28
+w 50
+h 20
+controlPv "$(MOTOR):SET_POSITION"
+font "courier-medium-r-10.0"
+fgColor index 25
+bgColor index 4
+editable
+motifWidget
+precision 3
+nullColor index 18
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 92
+y 28
+w 36
+h 20
+controlPv "$(MOTOR):SET_POSITION.LOPR"
+displayMode "decimal"
+precision 1
+fgColor index 25
+bgColor index 0
+font "courier-medium-r-10.0"
+fontAlign "right"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 172
+y 28
+w 40
+h 20
+controlPv "$(MOTOR):SET_POSITION.HOPR"
+displayMode "decimal"
+precision 1
+fgColor index 25
+bgColor index 0
+font "courier-medium-r-10.0"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 128
+y 48
+w 50
+h 20
+controlPv "$(MOTOR):TWV"
+font "courier-medium-r-10.0"
+fgColor index 25
+bgColor index 4
+editable
+motifWidget
+precision 3
+nullColor index 18
+useHexPrefix
+newPos
+objType "controls"
+noExecuteClipMask
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 108
+y 48
+w 18
+h 18
+fgColor index 14
+onColor index 4
+offColor index 4
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(MOTOR):TWR.PROC"
+pressValue "1"
+onLabel "-"
+offLabel "-"
+3d
+useEnumNumeric
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 176
+y 48
+w 20
+h 20
+fgColor index 14
+onColor index 4
+offColor index 4
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(MOTOR):TWF.PROC"
+pressValue "1"
+onLabel "+"
+offLabel "+"
+3d
+useEnumNumeric
+font "helvetica-bold-r-14.0"
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 48
+w 14
+h 14
+lineColor index 35
+lineAlarm
+fill
+fillColor index 35
+visPv "$(MOTOR):LLIM"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Circle)
+object activeCircleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 198
+y 48
+w 14
+h 14
+lineColor index 35
+lineAlarm
+fill
+fillColor index 35
+visPv "$(MOTOR):HLIM"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 232
+y 24
+w 40
+h 18
+fgColor index 26
+onColor index 4
+offColor index 4
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(MOTOR):HOME.PROC"
+pressValue "1"
+onLabel "HOME"
+offLabel "HOME"
+3d
+useEnumNumeric
+font "helvetica-bold-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 216
+y 44
+w 56
+h 20
+fgColor index 26
+onColor index 4
+offColor index 4
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(MOTOR):STOPHOME.PROC"
+pressValue "1"
+onLabel "STOP HOME"
+offLabel "STOP HOME"
+3d
+useEnumNumeric
+font "helvetica-bold-r-8.0"
+visPv "$(MOTOR):IS_HOMING"
+visMin "1"
+visMax "2"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 46
+w 48
+h 16
+font "helvetica-bold-r-14.0"
+fgColor index 15
+bgColor index 0
+useDisplayBg
+visPv "$(MOTOR):HOME_DONE"
+visMin "1"
+visMax "2"
+value {
+  "Homed"
+}
+autoSize
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 4
+y 48
+w 85
+h 16
+font "helvetica-bold-r-14.0"
+fgColor index 35
+bgColor index 3
+visPv "$(MOTOR):IS_HOMING"
+visMin "1"
+visMax "2"
+value {
+  "Homing        "
+}
+autoSize
+endObjectProperties
+
