@@ -7,7 +7,6 @@ epicsEnvSet( "IOCSH_PS1", "$$IOCNAME>" )
 epicsEnvSet( "IOCPVROOT", "$$IOC_PV"   )
 epicsEnvSet( "LOCATION",  "$$IF(LOCATION,$$LOCATION,$$IOC_PV)")
 epicsEnvSet( "IOC_TOP",   "$$IOCTOP"   )
-epicsEnvSet( "IOC_TOP",   "$$IOCTOP"   )
 epicsEnvSet( "TOP",       "$$TOP"      )
 epicsEnvSet( "STREAM_PROTOCOL_PATH", "$(IOC_TOP)/app/srcProtocol" )
 
