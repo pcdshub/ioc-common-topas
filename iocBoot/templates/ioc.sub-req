@@ -22,3 +22,12 @@ $$LOOP(MOTOR)
 	{ "$$BASE", "$$ID" }
 $$ENDLOOP(MOTOR)
 }
+
+file topas_inter.tpl-req
+{
+	pattern
+	{ BASE, ID }
+$$LOOP(INTERACTION)
+	{ "$$BASE", "$$ID" }
+$$ENDLOOP(INTERACTION)
+}

@@ -26,6 +26,7 @@ ARCHIVE += topas.tpl-arch
 REQ += topas-ioc.req
 REQ += topas.tpl-req
 REQ += topas_motor.tpl-req
+REQ += topas_inter.tpl-req
 
 # Nothing to build for autosave, just install from $AUTOSAVE/db
 DB_INSTALLS += $(AUTOSAVE)/db/save_restoreStatus.db

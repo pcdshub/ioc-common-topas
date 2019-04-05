@@ -1,0 +1,3 @@
+$(BASE):i$(ID):NAME
+$(BASE):i$(ID):MIN
+$(BASE):i$(ID):MAX

@@ -1,0 +1,5 @@
+#!/bin/csh
+setenv PSPKG_ROOT /reg/common/package
+setenv PSPKG_RELEASE controls-0.0.8
+source $PSPKG_ROOT/etc/set_env.csh
+python $0.py $1

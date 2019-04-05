@@ -1,6 +1,6 @@
 record(ao, "$(BASE):m$(ID):SET_POSITION") {
-    field(DESC, "$(NAME)")
-    field(EGU,  "$(EGU)")
+    field(DESC, "$(NAME=)")
+    field(EGU,  "$(EGU=)")
     field(LOPR, "$(LOPR=0)")
     field(HOPR, "$(HOPR=0)")
     field(FLNK, "$(BASE):m$(ID):PUSH_IF_CHANGE")
@@ -17,8 +17,8 @@ record(calcout, "$(BASE):m$(ID):PUSH_IF_CHANGE") {
 }
 
 record(ao, "$(BASE):m$(ID):DO_SET") {
-    field(DESC, "$(NAME)")
-    field(EGU,  "$(EGU)")
+    field(DESC, "$(NAME=)")
+    field(EGU,  "$(EGU=)")
     field(LOPR, "$(LOPR=0)")
     field(HOPR, "$(HOPR=0)")
     field(DTYP, "stream")
@@ -27,12 +27,12 @@ record(ao, "$(BASE):m$(ID):DO_SET") {
 }
 
 record(ao, "$(BASE):m$(ID):TWV") {
-    field(DESC, "$(NAME) Tweak Value")
+    field(DESC, "$(NAME=) Tweak Value")
     field(VAL,  "0.1")
 }
 
 record(calcout, "$(BASE):m$(ID):TWF") {
-    field(DESC, "$(NAME) Tweak Forward")		
+    field(DESC, "$(NAME=) Tweak Forward")		
     field(INPA, "$(BASE):m$(ID):SET_POSITION")
     field(INPB, "$(BASE):m$(ID):TWV")
     field(CALC, "A+B")
@@ -42,7 +42,7 @@ record(calcout, "$(BASE):m$(ID):TWF") {
 }
 
 record(calcout, "$(BASE):m$(ID):TWR") {
-    field(DESC, "$(NAME) Tweak Reverse")		
+    field(DESC, "$(NAME=) Tweak Reverse")		
     field(INPA, "$(BASE):m$(ID):SET_POSITION")
     field(INPB, "$(BASE):m$(ID):TWV")
     field(CALC, "A-B")
@@ -52,26 +52,26 @@ record(calcout, "$(BASE):m$(ID):TWR") {
 }
 
 record(bo, "$(BASE):m$(ID):STOP") {
-    field(DESC, "$(NAME) Stop")
+    field(DESC, "$(NAME=) Stop")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto STOP($(ID)) $(PORT)")
 }
 
 record(bo, "$(BASE):m$(ID):HOME") {
-    field(DESC, "$(NAME) Home")
+    field(DESC, "$(NAME=) Home")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto HOME($(ID)) $(PORT)")
     field(FLNK, "$(BASE):m$(ID):IS_HOMING")
 }
 
 record(bo, "$(BASE):m$(ID):STOPHOME") {
-    field(DESC, "$(NAME) Stop Homing")
+    field(DESC, "$(NAME=) Stop Homing")
     field(DTYP, "stream")
     field(OUT,  "@topas.proto STOPHOME($(ID)) $(PORT)")
 }
 
 record(bi, "$(BASE):m$(ID):IS_HOMING") {
-    field(DESC, "$(NAME) Home")
+    field(DESC, "$(NAME=) Home")
     field(DTYP, "stream")
     field(INP,  "@topas.proto STATUS($(ID),$(BASE)) $(PORT)")
     field(SCAN, ".5 second")
@@ -82,32 +82,32 @@ record(bi, "$(BASE):m$(ID):IS_HOMING") {
 
 # Written by the STATUS protocol.
 record(ai, "$(BASE):m$(ID):CUR_POSITION") {
-    field(DESC, "$(NAME)")
+    field(DESC, "$(NAME=)")
 }
 
 # Written by the STATUS protocol.
 record(bi, "$(BASE):m$(ID):LLIM") {
-    field(DESC, "$(NAME) Low Limit Hit")
+    field(DESC, "$(NAME=) Low Limit Hit")
     field(ZNAM, "No")
     field(ONAM, "Yes")
 }
 
 # Written by the STATUS protocol.
 record(bi, "$(BASE):m$(ID):HLIM") {
-    field(DESC, "$(NAME) High Limit Hit")
+    field(DESC, "$(NAME=) High Limit Hit")
     field(ZNAM, "No")
     field(ONAM, "Yes")
 }
 
 # Written by the STATUS protocol.
 record(ai, "$(BASE):m$(ID):TARGET_POSITION") {
-    field(DESC, "$(NAME)")
-    field(EGU,  "$(EGU)")
+    field(DESC, "$(NAME=)")
+    field(EGU,  "$(EGU=)")
     field(FLNK, "$(BASE):m$(ID):PUSH_TARGET_TO_SET")
 }
 
 record(calcout, "$(BASE):m$(ID):PUSH_TARGET_TO_SET") {
-    field(DESC, "$(NAME) Update Set Position")		
+    field(DESC, "$(NAME=) Update Set Position")		
     field(INPA, "$(BASE):m$(ID):TARGET_POSITION")
     field(CALC, "A")
     field(OOPT, "On Change")
@@ -116,7 +116,7 @@ record(calcout, "$(BASE):m$(ID):PUSH_TARGET_TO_SET") {
 }
 
 record(bi, "$(BASE):m$(ID):HOME_DONE") {
-    field(DESC, "$(NAME) Home Done")
+    field(DESC, "$(NAME=) Home Done")
     field(DTYP, "stream")
     field(INP,  "@topas.proto HOMESTAT($(ID),$(BASE)) $(PORT)")
     field(SCAN, ".5 second")
@@ -126,5 +126,5 @@ record(bi, "$(BASE):m$(ID):HOME_DONE") {
 
 # Written by the HOMESTAT protocol.
 record(stringin, "$(BASE):m$(ID):HOME_ERR") {
-    field(DESC, "$(NAME) Home Error")
+    field(DESC, "$(NAME=) Home Error")
 }
