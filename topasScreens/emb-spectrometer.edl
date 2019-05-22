@@ -1,0 +1,93 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1702
+y 614
+w 820
+h 340
+font "helvetica-bold-i-18.0"
+fontAlign "center"
+ctlFont "courier-bold-r-14.0"
+ctlFontAlign "right"
+btnFont "courier-medium-r-8.0"
+fgColor index 14
+bgColor index 8
+textColor index 10
+ctlFgColor1 index 25
+ctlFgColor2 index 30
+ctlBgColor1 index 5
+ctlBgColor2 index 10
+topShadowColor index 5
+botShadowColor index 10
+title "$(NAME)"
+showGrid
+snapToGrid
+gridSize 8
+pvType "EPICS"
+endScreenProperties
+
+# (X-Y Graph)
+object xyGraphClass
+beginObjectProperties
+major 4
+minor 8
+release 0
+# Geometry
+x 8
+y 8
+w 810
+h 320
+# Appearance
+border
+graphTitle "$(NAME)"
+fgColor index 14
+bgColor index 5
+gridColor index 10
+font "courier-medium-r-12.0"
+# Operating Modes
+nPts 2500
+# X axis properties
+showXAxis
+xAxisSrc "fromUser"
+xMin 200
+xMax 1200
+xLabelIntervals 5
+xMajorsPerLabel 5
+xShowLabelGrid
+# Y axis properties
+showYAxis
+yAxisSrc "AutoScale"
+yMax 1
+yLabelIntervals 5
+yMajorsPerLabel 5
+yShowLabelGrid
+# Y2 axis properties
+y2AxisSrc "AutoScale"
+y2Max 1
+# Trace Properties
+numTraces 1
+xPv {
+  0 "$(XSPECPV)"
+}
+yPv {
+  0 "$(SPECPV)"
+}
+plotUpdateMode {
+  0 "y"
+}
+opMode {
+  0 "plot"
+}
+xSigned {
+  0 1
+}
+ySigned {
+  0 1
+}
+plotColor {
+  0 index 15
+}
+endObjectProperties
+
