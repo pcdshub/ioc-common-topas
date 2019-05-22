@@ -4,6 +4,7 @@ ReplyTimeout  =  200;
 ReadTimeout   =  100;
 WriteTimeout  =  100;
 ExtraInput    = Ignore;
+#Separator     = ",";
 
 SETWL   { out "PUTV:Optical/WavelengthControl/SetWavelengthUsingAnyInteraction:IsSuccess,ErrorMessage";
 	  out "%(\$1:SET_WAVELENGTH)g";
@@ -47,3 +48,13 @@ SETWLUI { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessa
 	  out "{\"Interaction\": \"%(\$1:INTERACTION)s\", \"Wavelength\": %g }";
 	  in  "IsSuccess %{false|true}";
 	  in  "ErrorMessage \"%(\$1:ERRORMESSAGE)s\""; }
+
+################################
+POWER   { out "GET:PowerData:measuredValue";
+	  in  "measuredValue %g"; }
+PSPEC   { out "GET:PowerSpectrum:spectrum";
+	  in  "spectrum %g"; }
+RSPEC   { out "GET:RawSpectrum:spectrum";
+	  in  "spectrum %g"; }
+XSPEC   { out "GET:Info:wavelengths";
+	  in  "wavelengths %g"; }

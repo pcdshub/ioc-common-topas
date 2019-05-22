@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 621
-y 157
-w 577
-h 739
+x 292
+y 103
+w 859
+h 948
 font "helvetica-medium-r-12.0"
 ctlFont "helvetica-medium-r-12.0"
 btnFont "helvetica-medium-r-12.0"
@@ -70,7 +70,7 @@ minor 0
 release 0
 x 0
 y 0
-w 576
+w 864
 h 40
 lineColor index 56
 fill
@@ -102,7 +102,7 @@ beginObjectProperties
 major 4
 minor 4
 release 0
-x 476
+x 768
 y 8
 w 40
 h 24
@@ -128,7 +128,7 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 524
+x 816
 y 8
 w 40
 h 24
@@ -681,8 +681,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 8
-y 576
+x 292
+y 256
 w 278
 h 74
 fgColor index 14
@@ -733,8 +733,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 8
-y 656
+x 292
+y 336
 w 278
 h 74
 fgColor index 14
@@ -786,7 +786,7 @@ major 4
 minor 1
 release 0
 x 292
-y 176
+y 416
 w 278
 h 74
 fgColor index 14
@@ -837,8 +837,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 292
-y 256
+x 576
+y 176
 w 278
 h 74
 fgColor index 14
@@ -863,8 +863,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 8
-y 496
+x 292
+y 176
 w 278
 h 74
 fgColor index 14
@@ -889,8 +889,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 292
-y 336
+x 576
+y 256
 w 278
 h 74
 fgColor index 14
@@ -915,8 +915,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 292
-y 496
+x 576
+y 416
 w 278
 h 74
 fgColor index 14
@@ -941,8 +941,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 292
-y 416
+x 576
+y 336
 w 278
 h 74
 fgColor index 14
@@ -967,8 +967,8 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 292
-y 576
+x 576
+y 496
 w 278
 h 74
 fgColor index 14
@@ -1006,5 +1006,407 @@ visMax "2"
 value {
   "In Progress     "
 }
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 580
+y 60
+w 276
+h 112
+lineColor index 3
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 580
+y 48
+w 132
+h 20
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 3
+value {
+  "Power Meters"
+}
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 716
+y 68
+w 124
+h 20
+controlPv "$(BASE):P1:POWER"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+precision 6
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 596
+y 68
+w 100
+h 20
+controlPv "$(BASE):P1:POWER.DESC"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 14
+fgAlarm
+bgColor index 12
+useDisplayBg
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 596
+y 92
+w 100
+h 20
+controlPv "$(BASE):P2:POWER.DESC"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 14
+fgAlarm
+bgColor index 12
+useDisplayBg
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 596
+y 116
+w 100
+h 20
+controlPv "$(BASE):P3:POWER.DESC"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 14
+fgAlarm
+bgColor index 12
+useDisplayBg
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 596
+y 140
+w 100
+h 20
+controlPv "$(BASE):P4:POWER.DESC"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 14
+fgAlarm
+bgColor index 12
+useDisplayBg
+limitsFromDb
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 716
+y 92
+w 124
+h 20
+controlPv "$(BASE):P2:POWER"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+precision 6
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 716
+y 116
+w 124
+h 20
+controlPv "$(BASE):P3:POWER"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+precision 6
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Text Monitor)
+object activeXTextDspClass:noedit
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 716
+y 140
+w 124
+h 20
+controlPv "$(BASE):P4:POWER"
+font "helvetica-medium-r-12.0"
+fontAlign "center"
+fgColor index 15
+fgAlarm
+bgColor index 12
+precision 6
+nullColor index 40
+smartRefresh
+useHexPrefix
+newPos
+objType "monitors"
+noExecuteClipMask
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 16
+y 584
+w 828
+h 352
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "menu"
+filePv "LOC\\spectrum=0"
+sizeOfs 5
+numDsps 4
+displayFileName {
+  0 "./emb-spectrometer.edl"
+  1 "./emb-spectrometer.edl"
+  2 "./emb-spectrometer.edl"
+  3 "./emb-spectrometer.edl"
+}
+menuLabel {
+  0 "1st Stage"
+  1 "2nd Stage"
+  2 "Mixer Stage"
+  3 "WL"
+}
+symbols {
+  0 "SPECPV=$(BASE):S1:SPECTRUM,XSPECPV=$(BASE):S1:WLS,NAME=1st Stage"
+  1 "SPECPV=$(BASE):S2:SPECTRUM,XSPECPV=$(BASE):S2:WLS,NAME=2nd Stage"
+  2 "SPECPV=$(BASE):S3:SPECTRUM,XSPECPV=$(BASE):S3:WLS,NAME=Mixer Stage"
+  3 "SPECPV=$(BASE):S4:SPECTRUM,XSPECPV=$(BASE):S4:WLS,NAME=WL"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 16
+y 512
+w 552
+h 68
+lineColor index 3
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 16
+y 496
+w 124
+h 20
+font "helvetica-bold-r-12.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 3
+value {
+  "Spectrometers"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 40
+y 528
+w 100
+h 40
+fgColor index 14
+onColor index 5
+offColor index 5
+topShadowColor index 1
+botShadowColor index 13
+controlPv "LOC\\spectrum"
+pressValue "0"
+onLabel "1st Stage"
+offLabel "1st Stage"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 176
+y 528
+w 100
+h 40
+fgColor index 14
+onColor index 5
+offColor index 5
+topShadowColor index 1
+botShadowColor index 13
+controlPv "LOC\\spectrum"
+pressValue "1"
+onLabel "2nd Stage"
+offLabel "2nd Stage"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 312
+y 528
+w 100
+h 40
+fgColor index 14
+onColor index 5
+offColor index 5
+topShadowColor index 1
+botShadowColor index 13
+controlPv "LOC\\spectrum"
+pressValue "2"
+onLabel "Mixer Stage"
+offLabel "Mixer Stage"
+3d
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 452
+y 528
+w 100
+h 40
+fgColor index 14
+onColor index 5
+offColor index 5
+topShadowColor index 1
+botShadowColor index 13
+controlPv "LOC\\spectrum"
+pressValue "3"
+onLabel "WL"
+offLabel "WL"
+3d
+font "helvetica-medium-r-12.0"
 endObjectProperties
 

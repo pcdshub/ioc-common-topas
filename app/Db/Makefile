@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
-DB += topas.db topas_motor.db topas_inter.db
+DB += topas.db topas_motor.db topas_inter.db topas_power.db topas_spec.db
 
 #----------------------------------------------------
 # Create and install (or just install)

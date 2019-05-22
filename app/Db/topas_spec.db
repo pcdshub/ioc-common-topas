@@ -1,0 +1,20 @@
+record(waveform, "$(BASE):S$(ID):SPECTRUM") {
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto PSPEC $(PORT)")
+    field(FTVL, "DOUBLE")
+    field(NELM, "5000")
+    field(DESC, "$(NAME)")
+    field(EGU,  "??")
+    field(SCAN, "1 second")
+}
+
+record(waveform, "$(BASE):S$(ID):WLS") {
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto XSPEC $(PORT)")
+    field(FTVL, "DOUBLE")
+    field(NELM, "5000")
+    field(DESC, "$(NAME)")
+    field(EGU,  "??")
+    field(SCAN, "Passive")
+    field(PINI, "YES")
+}

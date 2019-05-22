@@ -43,7 +43,7 @@ typedef struct cjAsynPort {
     asynInterface  octet;
     asynOctet      octet_if;
 #define MAXTXBUF   16384
-#define MAXRXBUF   65536
+#define MAXRXBUF   131072
     char           outbuf[MAXTXBUF];  /* Buffer to "write" to the asyn port */
     char          *rxbuf;
     char           inbuf[MAXRXBUF];   /* Raw read from the asyn port */
@@ -290,6 +290,22 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
     return status;
 }
 
+static int printNumber(const rapidjson::Value *v, char *output)
+{
+    /* OK, this is kind of painful. */
+    if (v->IsDouble())
+        sprintf(output, "%.15lg", v->GetDouble());
+    else if (v->IsInt())
+        sprintf(output, "%d", v->GetInt());
+    else if (v->IsUint())
+        sprintf(output, "%u", v->GetUint());
+    else if (v->IsInt64())
+        sprintf(output, "%ld", v->GetInt64());
+    else if (v->IsUint64())
+        sprintf(output, "%lu", v->GetUint64());
+    return strlen(output);
+}
+
 static int parseJSON(rapidjson::Document *d, char *name, char *output)
 {
     char *s = name, *t = NULL;
@@ -320,20 +336,28 @@ static int parseJSON(rapidjson::Document *d, char *name, char *output)
         break;
     case rapidjson::kNumberType:
         /* OK, this is kind of painful. */
-        if (v->IsDouble())
-            sprintf(output, "%s %.15lg\r\n", name, v->GetDouble());
-        else if (v->IsInt())
-            sprintf(output, "%s %d\r\n", name, v->GetInt());
-        else if (v->IsUint())
-            sprintf(output, "%s %u\r\n", name, v->GetUint());
-        else if (v->IsInt64())
-            sprintf(output, "%s %ld\r\n", name, v->GetInt64());
-        else if (v->IsUint64())
-            sprintf(output, "%s %lu\r\n", name, v->GetUint64());
+        s = output;
+        sprintf(output, "%s ", name);
+        s += strlen(output);
+        s += printNumber(v, s);
+        *s++ = '\r';
+        *s++ = '\n';
+        *s++ = 0;
+        break;
+    case rapidjson::kArrayType:
+        s = output;
+        sprintf(output, "%s", name);
+        s += strlen(output);
+        for (rapidjson::Value::ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr) {
+            *s++ = ' ';
+            s += printNumber(itr, s);
+        }
+        *s++ = '\r';
+        *s++ = '\n';
+        *s++ = 0;
         break;
     case rapidjson::kObjectType:
-    case rapidjson::kArrayType:
-        /* We don't support returning objects or arrays!  Yet. */
+        /* We don't support returning objects! */
     default:
         return -1;
     }

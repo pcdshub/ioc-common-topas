@@ -26,7 +26,7 @@ topas_registerRecordDeviceDriver(pdbbase)
 #var streamDebug 1
 
 $$LOOP(TOPAS)
-drvAsynCurlJSONPortConfigure(TOPAS$$INDEX, "$$URL")
+drvAsynCurlJSONPortConfigure(TOPAS$$INDEX, "http://$$HOST:8004/$$DEVICE/v0/PublicAPI")
 
 #define ASYN_TRACE_ERROR     0x0001
 #define ASYN_TRACEIO_DEVICE  0x0002
@@ -42,6 +42,16 @@ $$IF(DEBUG,,#)asynSetTraceIOMask( "TOPAS$$INDEX", 0, 2)  # Escape the strings.
 ## Asyn record support
 dbLoadRecords( "db/asynRecord.db","P=$$BASE,R=,PORT=TOPAS$$INDEX,ADDR=0,OMAX=0,IMAX=0")
 $$ENDLOOP(TOPAS)
+$$LOOP(POWERMETER)
+drvAsynCurlJSONPortConfigure(POWER$$INDEX, "http://$$HOST:$$PORT/V2")
+$$IF(DEBUG,,#)asynSetTraceMask("POWER$$INDEX", 0, 0x19) # log everything
+$$IF(DEBUG,,#)asynSetTraceIOMask("POWER$$INDEX", 0, 2)  # Escape the strings.
+$$ENDLOOP(POWERMETER)
+$$LOOP(SPECTROMETER)
+drvAsynCurlJSONPortConfigure(SPEC$$INDEX, "http://$$HOST:$$PORT/V2")
+$$IF(DEBUG,,#)asynSetTraceMask("SPEC$$INDEX", 0, 0x19) # log everything
+$$IF(DEBUG,,#)asynSetTraceIOMask("SPEC$$INDEX", 0, 2)  # Escape the strings.
+$$ENDLOOP(SPECTROMETER)
 
 #------------------------------------------------------------------------------
 # Load record instances
@@ -55,6 +65,12 @@ $$ENDLOOP(MOTOR)
 $$LOOP(INTERACTION)
 dbLoadRecords( "db/topas_inter.db", "BASE=$$BASE,ID=$$ID,NAME=$$NAME,FN=$$FN,FV=$$FV,MIN=$$MIN,MAX=$$MAX" )
 $$ENDLOOP(INTERACTION)
+$$LOOP(POWERMETER)
+dbLoadRecords( "db/topas_power.db", "BASE=$$BASE,ID=$$ID,NAME=$$NAME,PORT=POWER$$INDEX" )
+$$ENDLOOP(POWERMETER)
+$$LOOP(SPECTROMETER)
+dbLoadRecords( "db/topas_spec.db", "BASE=$$BASE,ID=$$ID,NAME=$$NAME,PORT=SPEC$$INDEX" )
+$$ENDLOOP(SPECTROMETER)
 dbLoadRecords( "db/iocSoft.db",			"IOC=$(IOCPVROOT)" )
 dbLoadRecords( "db/save_restoreStatus.db",	"P=$(IOCPVROOT):" )
 

@@ -1,0 +1,7 @@
+record(ai, "$(BASE):P$(ID):POWER") {
+    field(DTYP, "stream")
+    field(INP,  "@topas.proto POWER $(PORT)")
+    field(DESC, "$(NAME)")
+    field(EGU,  "W?")
+    field(SCAN, "1 second")
+}
