@@ -26,7 +26,7 @@ topas_registerRecordDeviceDriver(pdbbase)
 #var streamDebug 1
 
 $$LOOP(TOPAS)
-drvAsynCurlJSONPortConfigure(TOPAS$$INDEX, "http://$$HOST:8004/$$DEVICE/v0/PublicAPI")
+drvAsynCurlJSONPortConfigure(TOPAS$$INDEX, "http://$$HOST:$$IF(PORT,$$PORT,8004)/$$DEVICE/v0/PublicAPI")
 
 #define ASYN_TRACE_ERROR     0x0001
 #define ASYN_TRACEIO_DEVICE  0x0002
