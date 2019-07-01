@@ -24,7 +24,7 @@ record(ao, "$(BASE):DO_WL_ANY") {
     field(DTYP, "stream")
     field(OUT,  "@topas.proto SETWL($(BASE)) $(PORT)")
     field(OMSL, "supervisory")
-    field(FLNK, "$(BASE):WL_SET_IN_PROGRESS")
+    field(FLNK, "$(BASE):WL_IN_PROGRESS")
 }
 
 record(ao, "$(BASE):DO_WL_DES") {
@@ -32,7 +32,7 @@ record(ao, "$(BASE):DO_WL_DES") {
     field(DTYP, "stream")
     field(OUT,  "@topas.proto SETWLI($(BASE)) $(PORT)")
     field(OMSL, "supervisory")
-    field(FLNK, "$(BASE):WL_SET_IN_PROGRESS")
+    field(FLNK, "$(BASE):WL_IN_PROGRESS")
 }
 
 # Automatically written by SETWL/SETWLI protocol
