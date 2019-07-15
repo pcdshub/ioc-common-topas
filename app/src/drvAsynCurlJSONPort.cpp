@@ -386,6 +386,9 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     case STATE_RBODY:
         if (pasyn->incur == -1) { /* First time through the loop! */
             if (pasyn->fcnt) {    /* We're parsing JSON */
+                if (pasyn->d)
+                    delete pasyn->d;
+                pasyn->d = new rapidjson::Document();
                 pasyn->d->Parse(pasyn->rawbuf);
                 if (pasyn->d->HasParseError()) {
                     asynPrint(pasynUser, ASYN_TRACE_ERROR, 
@@ -510,7 +513,10 @@ cleanup(cjAsynPort_t *pasyn)
     if (pasyn) {
         free(pasyn->portName);
         free(pasyn->baseURL);
-        delete pasyn->d;
+        if (pasyn->d) {
+            delete pasyn->d;
+            pasyn->d = NULL;
+        }
         if (pasyn->dev) {
             curl_easy_cleanup(pasyn->dev);
             pasyn->dev = NULL;
@@ -595,7 +601,7 @@ epicsShareFunc int drvAsynCurlJSONPortConfigure(const char *portName, char *base
     pasyn->headers = curl_slist_append(pasyn->headers, "Content-Type: application/json");
     pasyn->flags = STATE_INIT;
     pasyn->flags = 0;
-    pasyn->d = new rapidjson::Document();
+    pasyn->d = NULL;
 
     pasyn->common.interfaceType = asynCommonType;
     pasyn->common.pinterface  = (void *)&asynCommonMethods;
