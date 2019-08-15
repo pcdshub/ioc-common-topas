@@ -8,53 +8,63 @@ ExtraInput    = Ignore;
 
 SETWL   { out "PUTV:Optical/WavelengthControl/SetWavelengthUsingAnyInteraction:IsSuccess,ErrorMessage";
 	  out "%(\$1:SET_WAVELENGTH)g";
+	  in  "%*d";
           in  "IsSuccess %(\$1:WL_SUCCESS){false|true}";
           in  "ErrorMessage \"%(\$1:WL_ERROR)[^\"]\""; }
 SETWLI  { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessage"; 
           out "{\"Interaction\": \"%(\$1:DESIRED_INTERACTION)s\", \"Wavelength\": %(\$1:SET_WAVELENGTH)g}";
+	  in  "%*d";
           in  "IsSuccess %(\$1:WL_SUCCESS){false|true}";
           in  "ErrorMessage \"%(\$1:WL_ERROR)[^\"]\""; }
-GETWL   { out "GET:Optical/WavelengthControl/Output/Wavelength"; in "%g"; }
-GETINTER{ out "GET:Optical/WavelengthControl/Output/Interaction"; in "\"%[^\"]\""; }
+GETWL   { out "GET:Optical/WavelengthControl/Output/Wavelength"; in  "%*d"; in "%g"; }
+GETINTER{ out "GET:Optical/WavelengthControl/Output/Interaction"; in  "%*d"; in "\"%[^\"]\""; }
 GETWSIP { out "GET:Optical/WavelengthControl/Output:IsWavelengthSettingInProgress,Wavelength,Interaction";
+	  in  "%*d";
 	  in "IsWavelengthSettingInProgress %{false|true}";
           in "Wavelength %(\$1:WAVELENGTH)g";
           in "Interaction \"%(\$1:INTERACTION)[^\"]\""; }
 
-ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in "%{false|true}" }
-ISILOPEN{ out "GET:ShutterInterlock/IsInterlockOpen"; in "%{false|true}" }
-OPENSH  { out "PUT:ShutterInterlock/OpenShutter" }
-CLOSESH { out "PUT:ShutterInterlock/CloseShutter" }
+ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in  "%*d"; in "%{false|true}" }
+ISILOPEN{ out "GET:ShutterInterlock/IsInterlockOpen"; in  "%*d"; in "%{false|true}" }
+OPENSH  { out "PUT:ShutterInterlock/OpenShutter"; in  "%*d"; }
+CLOSESH { out "PUT:ShutterInterlock/CloseShutter"; in  "%*d"; }
 
-SETTPU  { out "PUTV:Motors/TargetPositionInUnits?id=\$1"; out "%g"; }
-GETTPU  { out "GET:Motors/TargetPositionInUnits?id=\$1"; in "%g"; }
-GETAPU  { out "GET:Motors/ActualPositionInUnits?id=\$1"; in "%g"; }
-STOP    { out "POST:Motors/Stop?id=\$1"; }
-STOPALL { out "POST:Motors/StopAll"; }
-HOME    { out "POST:Motors/Home?id=\$1"; }
+SETTPU  { out "PUTV:Motors/TargetPositionInUnits?id=\$1"; out "%g"; in  "%*d"; }
+GETTPU  { out "GET:Motors/TargetPositionInUnits?id=\$1"; in  "%*d"; in "%g"; }
+GETAPU  { out "GET:Motors/ActualPositionInUnits?id=\$1"; in  "%*d"; in "%g"; }
+STOP    { out "POST:Motors/Stop?id=\$1"; in  "%*d"; }
+STOPALL { out "POST:Motors/StopAll"; in  "%*d"; }
+HOME    { out "POST:Motors/Home?id=\$1"; in  "%*d"; }
 STATUS  { out "GET:Motors/?id=\$1:IsHoming,ActualPositionInUnits,IsLeftSwitchPressed,IsRightSwitchPressed,TargetPositionInUnits";
+	  in  "%*d";
           in "IsHoming %{false|true}";
           in "ActualPositionInUnits %(\$2:m\$1:CUR_POSITION)g";
           in "IsLeftSwitchPressed %(\$2:m\$1:LLIM){false|true}";
           in "IsRightSwitchPressed %(\$2:m\$1:HLIM){false|true}";
           in "TargetPositionInUnits %(\$2:m\$1:TARGET_POSITION)g"; }
-STOPHOME{ out "POST:Motors/StopHoming?id=\$1"; }
+STOPHOME{ out "POST:Motors/StopHoming?id=\$1"; in  "%*d"; }
 HOMESTAT{ out "GET:Motors/LastHomingProcedureResult?id=\$1:IsSuccessful,FailureDescription";
+ 	  in  "%*d";
           in "IsSuccessful %{false|true}";
           in "FailureDescription \"%(\$2:m\$1:HOME_ERR)[^\"]*\"";
           @mismatch {in "\"%(\$2:m\$1:HOME_ERR)[^\"]*\""; }}
 
 SETWLUI { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessage";
 	  out "{\"Interaction\": \"%(\$1:INTERACTION)s\", \"Wavelength\": %g }";
+	  in  "%*d";
 	  in  "IsSuccess %{false|true}";
 	  in  "ErrorMessage \"%(\$1:ERRORMESSAGE)s\""; }
 
 ################################
 POWER   { out "GET:PowerData:measuredValue";
+	  in  "%*d";
 	  in  "measuredValue %g"; }
 PSPEC   { out "GET:PowerSpectrum:spectrum";
+	  in  "%*d";
 	  in  "spectrum %g"; }
 RSPEC   { out "GET:RawSpectrum:spectrum";
+	  in  "%*d";
 	  in  "spectrum %g"; }
 XSPEC   { out "GET:Info:wavelengths";
+	  in  "%*d";
 	  in  "wavelengths %g"; }

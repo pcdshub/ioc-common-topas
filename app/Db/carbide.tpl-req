@@ -1,0 +1,6 @@
+$(BASE):TargetPulseDuration
+$(BASE):TargetPpDivider
+$(BASE):TargetAttenuatorPercentage
+$(BASE):SelectedPresetIndex
+$(BASE):TargetBurstPulseCount
+$(BASE):TargetPosition

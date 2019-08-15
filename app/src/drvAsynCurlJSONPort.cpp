@@ -19,6 +19,7 @@ typedef struct cjAsynPort {
     char          *portName;
     char          *baseURL;
     CURL          *dev;
+    long           curlrc;   /* Last return code! */
     int            flags;
 #define FLAG_SHUTDOWN                   0x1
     int            state;
@@ -26,12 +27,15 @@ typedef struct cjAsynPort {
      * State definitions:
      *     INIT  - We are ready to make a new request.
      *     WBODY - We have a request to make, but are waiting to get the request body.
+     *     RCODE - We have made a request and have the response, but are waiting for
+     *             streamdevice to read out the return code.
      *     RBODY - We have made a request and have the response, but are waiting for
-     *             streamdevice to read it out.
+     *             streamdevice to read out the body.
      */
 #define STATE_INIT                      0
 #define STATE_WBODY                     1
-#define STATE_RBODY                     2
+#define STATE_RCODE                     2
+#define STATE_RBODY                     3
     int            req;
 #define REQ_GET                         0
 #define REQ_POST                        1
@@ -192,8 +196,9 @@ static asynStatus parseRequest(cjAsynPort_t *pasyn, asynUser *pasynUser)
         curl_easy_setopt(pasyn->dev, CURLOPT_WRITEFUNCTION, appendMemoryCallback);
         curl_easy_setopt(pasyn->dev, CURLOPT_WRITEDATA, (void *)pasyn);
         pasyn->rxbuf = pasyn->fcnt ? pasyn->rawbuf : pasyn->inbuf;
-        pasyn->state = STATE_RBODY;
+        pasyn->state = STATE_RCODE;
         status = (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
+        curl_easy_getinfo(pasyn->dev, CURLINFO_RESPONSE_CODE, &pasyn->curlrc);
         if (!pasyn->fcnt) {
             pasyn->inbuf[pasyn->incnt++] = '\r';
             pasyn->inbuf[pasyn->incnt++] = '\n';
@@ -207,9 +212,11 @@ static asynStatus parseRequest(cjAsynPort_t *pasyn, asynUser *pasynUser)
         curl_easy_setopt(pasyn->dev, CURLOPT_WRITEDATA, (void *)pasyn);
         if (pasyn->fcnt) {
             pasyn->rxbuf = pasyn->rawbuf;
-            pasyn->state = STATE_RBODY;
+            pasyn->state = STATE_RCODE;
         }
-        return (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
+        status = (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
+        curl_easy_getinfo(pasyn->dev, CURLINFO_RESPONSE_CODE, &pasyn->curlrc);
+        return status;
     case REQ_PUTV:
         curl_easy_setopt(pasyn->dev, CURLOPT_CUSTOMREQUEST, "PUT");
         curl_easy_setopt(pasyn->dev, CURLOPT_WRITEFUNCTION, 
@@ -229,7 +236,9 @@ static asynStatus parseRequest(cjAsynPort_t *pasyn, asynUser *pasynUser)
             pasyn->rxbuf = pasyn->rawbuf;
             pasyn->state = STATE_RBODY;
         }
-        return (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
+        status = (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
+        curl_easy_getinfo(pasyn->dev, CURLINFO_RESPONSE_CODE, &pasyn->curlrc);
+        return status;
     case REQ_POSTV:
         curl_easy_setopt(pasyn->dev, CURLOPT_CUSTOMREQUEST, "POST");
         curl_easy_setopt(pasyn->dev, CURLOPT_WRITEFUNCTION, 
@@ -273,11 +282,10 @@ static asynStatus writeIt(void *drvPvt, asynUser *pasynUser,
         curl_easy_setopt(pasyn->dev, CURLOPT_POSTFIELDS, data);
         curl_easy_setopt(pasyn->dev, CURLOPT_POSTFIELDSIZE, numchars);
         status = (curl_easy_perform(pasyn->dev) == CURLE_OK) ? asynSuccess : asynError;
-        if (pasyn->fcnt)
-            pasyn->state = STATE_RBODY;
-        else
-            pasyn->state = STATE_INIT;
+        curl_easy_getinfo(pasyn->dev, CURLINFO_RESPONSE_CODE, &pasyn->curlrc);
+        pasyn->state = STATE_RCODE;
         break;
+    case STATE_RCODE:
     case STATE_RBODY:
         asynPrint(pasynUser, ASYN_TRACE_ERROR, "Trying to write in read state?\n");
         status = asynError;
@@ -335,7 +343,6 @@ static int parseJSON(rapidjson::Document *d, char *name, char *output)
         sprintf(output, "%s \"%s\"\r\n", name, v->GetString());
         break;
     case rapidjson::kNumberType:
-        /* OK, this is kind of painful. */
         s = output;
         sprintf(output, "%s ", name);
         s += strlen(output);
@@ -382,6 +389,14 @@ static asynStatus readIt(void *drvPvt, asynUser *pasynUser,
     case STATE_INIT:
     case STATE_WBODY:
         /* We just don't read anything here. */
+        break;
+    case STATE_RCODE:
+        sprintf(data, "%03ld\r\n", pasyn->curlrc);
+        *nbytesTransfered = 5;
+        if (pasyn->req == REQ_GET || pasyn->fcnt)
+            pasyn->state = STATE_RBODY;
+        else
+            pasyn->state = STATE_INIT;
         break;
     case STATE_RBODY:
         if (pasyn->incur == -1) { /* First time through the loop! */

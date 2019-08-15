@@ -12,14 +12,18 @@ if [ -f    ${SETUP_SITE_TOP}/epicsenv-cur.sh ]; then
 	source ${SETUP_SITE_TOP}/epicsenv-cur.sh
 fi
 
+$$LOOP(TOPAS)
 EDM_TOP=topasTop.edl
 export IOC_PV=$$IOC_PV
-$$LOOP(TOPAS)
 export BASE=$$BASE
-$$ENDLOOP(TOPAS)
 
 pushd $$IOCTOP/topasScreens
 edm -x -eolc	\
 	-m "IOC=${IOC_PV}"		\
         -m "BASE=${BASE}"               \
 	${EDM_TOP} &
+$$ENDLOOP(TOPAS)
+
+$$LOOP(CARBIDE)
+echo 'No carbide screen for $$NAME!!'
+$$ENDLOOP(CARBIDE)

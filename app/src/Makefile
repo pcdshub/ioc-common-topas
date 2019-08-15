@@ -17,14 +17,21 @@ USR_INCLUDES += -I$(PCRE_INCLUDE) -I/reg/g/psdm/sw/conda2/inst/envs/ps-2.0.0/inc
 #======================================================
 
 pcre_DIR = $(PCRE_LIB)
-curl_DIR = /opt/libcurl/lib
+#curl_DIR = /opt/libcurl/lib
+# If static, we actually want curl without-ssl, without-zlib.
+ifeq '$(T_A)' 'rhel6-x86_64'
+curl_DIR = /reg/neh/home/mcbrowne/rhel6/lib
+endif
+ifeq '$(T_A)' 'rhel7-x86_64'
+curl_DIR = /reg/neh/home/mcbrowne/rhel7/lib
+endif
+
 
 # ======================================================
 # LINK "NON EPICS" EXTERNAL PACKAGE LIBRARIES STATICALLY
 #=======================================================
 
 USR_LIBS_Linux += pcre
-#USR_LIBS += pcre
 
 #=============================
 # Build an ioc application
@@ -40,7 +47,6 @@ topas_DBD += base.dbd
 topas_DBD += iocAdmin.dbd
 topas_DBD += asSupport.dbd
 topas_DBD += asyn.dbd
-#topas_DBD += asynRecord.dbd
 topas_DBD += drvAsynSerialPort.dbd
 topas_DBD += drvAsynIPPort.dbd
 topas_DBD += stream.dbd
@@ -61,13 +67,10 @@ topas_LIBS += autosave
 topas_LIBS += asyn
 topas_LIBS += stream
 topas_LIBS += $(EPICS_BASE_IOC_LIBS)
+topas_LIBS += curl
+USR_SYS_LIBS += z
 
-topas_LDFLAGS += -L$(curl_DIR) -lcurl
-
-#ifneq '$(T_A)' 'RTEMS-beatnik'
-#PROD_SYS_LIBS_DEFAULT += pcre
-#SHRLIB_DEPLIB_DIRS += $(PCRE_LIB)
-#endif
+topas_LDFLAGS += -L$(curl_DIR)
 
 #===========================
 

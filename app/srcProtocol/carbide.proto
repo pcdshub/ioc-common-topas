@@ -1,0 +1,78 @@
+InTerminator  = "\r\n";
+OutTerminator = "\r\n";
+ReplyTimeout  =  200;
+ReadTimeout   =  100;
+WriteTimeout  =  100;
+ExtraInput    = Ignore;
+
+GETBASIC { out "GET:Basic:ActualPpDivider,TargetPulseDuration,ActualOutputEnergy,ActualHarmonic,IsOutputEnabled,ActualStateName,TargetPpDivider,TargetAttenuatorPercentage,ActualShutterState,ActualOutputFrequency,SelectedPresetIndex,LastExecutedPresetIndex,ActualOutputPower,GeneralStatus,ActualPulseDuration,ActualAttenuatorPercentage,ActualBurstPulseCount,IsPowerlockEnabled,TargetBurstPulseCount"
+	   in "%*d";
+	   in "ActualPpDivider %(\$1:ActualPpDivider_RBV)d";
+	   in "TargetPulseDuration %(\$1:TargetPulseDuration_RBV)g";
+	   in "ActualOutputEnergy %(\$1:ActualOutputEnergy_RBV)g";
+	   in "ActualHarmonic %(\$1:ActualHarmonic_RBV)d";
+	   in "IsOutputEnabled %(\$1:IsOutputEnabled_RBV){false|true}";
+ 	   in "ActualStateName \"%(\$1:ActualStateName_RBV)[^\"]\"";
+	   in "TargetPpDivider %(\$1:TargetPpDivider_RBV)d";
+	   in "TargetAttenuatorPercentage %(\$1:TargetAttenuatorPercentage_RBV)g";
+	   in "ActualShutterState %(\$1:ActualShutterState_RBV){Closed|Open}";
+	   in "ActualOutputFrequency %(\$1:ActualOutputFrequency_RBV)g";
+	   in "SelectedPresetIndex %(\$1:SelectedPresetIndex_RBV)d";
+	   in "LastExecutedPresetIndex %(\$1:LastExecutedPresetIndex_RBV)d";
+	   in "ActualOutputPower %(\$1:ActualOutputPower_RBV)g";
+	   in "GeneralStatus \"%(\$1:GeneralStatus_RBV)[^\"]\"";
+	   in "ActualPulseDuration %(\$1:ActualPulseDuration_RBV)d";
+	   in "ActualAttenuatorPercentage %(\$1:ActualAttenuatorPercentage_RBV)g";
+	   in "ActualBurstPulseCount %(\$1:ActualBurstPulseCount_RBV)d";
+	   in "IsPowerlockEnabled %(\$1:IsPowerlockEnabled_RBV){false|true}";
+	   in "TargetBurstPulseCount %(\$1:TargetBurstPulseCount_RBV)d"; }
+
+TAP      { out "PUTV:Basic/TargetAttenuatorPercentage";
+	   out "%g";
+	   in "%*d"; }
+
+TPD      { out "PUTV:Basic/TargetPulseDuration";
+	   out "%g";
+	   in "%*d"; }
+
+TPPD     { out "PUTV:Basic/TargetPpDivider";
+	   out "%d";
+	   in "%*d"; }
+
+TBPC     { out "PUTV:Basic/TargetBurstPulseCount";
+	   out "%d";
+	   in "%*d"; }
+
+SPI      { out "PUTV:Basic/SelectedPresetIndex";
+	   out "%d";
+	   in "%*d"; }
+
+CO       { out "POST:Basic/CloseOutput"; in "%d"; }
+EO       { out "POST:Basic/EnableOutput"; in "%d"; }
+ASP      { out "POST:Basic/ApplySelectedPreset"; in "%d"; }
+GSB      { out "POST:Basic/GotoStandby"; in "%d"; }
+EPL      { out "POST:Basic/EnablePowerlock"; in "%d"; }
+DPL      { out "POST:Basic/DisablePowerlock"; in "%d"; }
+
+GETSTRCOM { out "GET:StretcherCompressor:PulseDurationPositiveChirpRange.To,PulseDurationPositiveChirpRange.From,PulseDurationNegativeChirpRange.To,PulseDurationNegativeChirpRange.From,ActualPosition,TargetPosition,PositionRange.To,PositionRange.From";
+	   in "%*d";
+	   in "PulseDurationPositiveChirpRange.To %(\$1:PulseDurationPositiveChirpRange:To_RBV)g";
+	   in "PulseDurationPositiveChirpRange.From %(\$1:PulseDurationPositiveChirpRange:From_RBV)g";
+	   in "PulseDurationNegativeChirpRange.To %(\$1:PulseDurationNegativeChirpRange:To_RBV)g";
+	   in "PulseDurationNegativeChirpRange.From %(\$1:PulseDurationNegativeChirpRange:From_RBV)g";
+	   in "ActualPosition %(\$1:ActualPosition_RBV)g";
+	   in "TargetPosition %(\$1:TargetPosition_RBV)g";
+	   in "PositionRange.To %(\$1:PositionRange:To_RBV)g";
+	   in "PositionRange.From %(\$1:PositionRange:From_RBV)g"; }
+
+TPOS     { out "PUTV:StretcherCompressor/TargetPosition";
+	   out "%g";
+	   in "%*d"; }
+
+SASID    { out "POST:StretcherCompressor/SaveAsShortestImpulseDuration"; in "%d"; }
+
+GETIRIE  { out "GET:Advanced/IsRemoteInterlockActive";
+	   in "%*d";
+	   in "IsPowerlockEnabled %(\$1:IsPowerlockEnabled_RBV){false|true}"; }
+
+RRI      { out "POST:Advanced/ResetRemoteInterlock"; in "%d"; }

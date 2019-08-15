@@ -46,7 +46,7 @@ DIRECTORY_TARGETS += $(INSTALL_LOCATION_STARTUP)
 ## Build Application Statically
 ## =============================
 SHARED_LIBRARIES=NO
-STATIC_BUILD=NO
+STATIC_BUILD=YES
 
 LINUX_VERSION=linux
 

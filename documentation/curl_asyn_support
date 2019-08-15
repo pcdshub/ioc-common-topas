@@ -22,6 +22,9 @@ The REQUEST indicates what sort of HTTP request should be made:
 The URL_TAIL specifies the address to be communicated with, namely
 "http://BASE_URL/URL_TAIL".  (Yes, the module inserts a '/' here.)
 
+The first input line after an output request returns the response code
+from the message.
+
 The COMMA_SEPARATED_JSON_FIELDNAMES (and final ':') is optional and
 indicates what parts of the JSON response are of interest.  If this
 is not specified for PUT, PUTV, POST, or POSTV, the response body is
@@ -38,20 +41,22 @@ to separate the levels.
 A few examples from the topas.proto file help to illustrate how this works.
 
 To read the shutter state, we have the following protocol:
-    ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in "%{false|true}" }
+    ISSHOPEN{ out "GET:ShutterInterlock/IsShutterOpen"; in "%*d"; in "%{false|true}" }
 
-This does a GET to the URL, and since no fields are specified, returns the
-entire response body back to asyn for processing.  In this case, the returned
-JSON will either be "true" or "false" (no quotes), and we parse this 
-accordingly.
+This does a GET to the URL, and reads (and ignores) the response code.  Since
+no fields are specified in the GET, the entire response body is handed back
+to asyn for processing.  In this case, the returned JSON will either be "true"
+or "false" (no quotes), and we parse this accordingly.
 
 To read the wavelength status, we use the following protocol:
     GETWSIP { out "GET:Optical/WavelengthControl/Output:IsWavelengthSettingInProgress,Wavelength,Interaction";
+              in "%*d";
 	      in "IsWavelengthSettingInProgress %{false|true}";
               in "Wavelength %(\$1:WAVELENGTH)g";
               in "Interaction \"%(\$1:INTERACTION)[^\"]\""; }
 
-In this case, we do a GET, and the expected response is something like:
+In this case, we do a GET (ignoring the response code), and the expected
+response is something like:
 
     {"ActualInteraction":"SIG","IdlerWavelength":2080,"Interaction":"SIG",
     "IsForBackgroundMeasurement":false,"IsUserActionCompleted":false,
@@ -76,13 +81,14 @@ Finally, to set the wavelength using a specific interaction, we use the
 following protocol:
     SETWLI  { out "PUTV:Optical/WavelengthControl/SetWavelength:IsSuccess,ErrorMessage"; 
               out "{\"Interaction\": \"%(\$1:DESIRED_INTERACTION)s\", \"Wavelength\": %(\$1:SET_WAVELENGTH)g}";
+	      in  "%*d";
               in  "IsSuccess %(\$1:WL_SUCCESS){false|true}";
               in  "ErrorMessage \"%(\$1:WL_ERROR)[^\"]\""; }
 
 Here, PUTV will cause a PUT to be generated, with the second out statement
 generating the message body.  In this case, we output a small JSON object
 with "Interaction" and "Wavelength" keys.  (This is output in one line!)
-The response returned will look something like:
+As usual, we ignore the response code and look at the returned JSON:
     {"ActualInteraction":"SIG","ErrorMessage":"",
      "FailedAfterInteractionSelection":false,"IdlerWavelength":
      2396.009975062344,"Interaction":"SIG","IsForBackgroundMeasurement":

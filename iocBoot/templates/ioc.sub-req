@@ -5,29 +5,41 @@ file topas-ioc.req
 	{ IOC = "$$IOC_PV" }
 }
 
+$$LOOP(TOPAS)
 file topas.tpl-req
 {
 	pattern
 	{ BASE }
-$$LOOP(TOPAS)
 	{ "$$BASE" }
-$$ENDLOOP(TOPAS)
 }
+$$ENDLOOP(TOPAS)
 
+$$LOOP(MOTOR)
 file topas_motor.tpl-req
 {
 	pattern
 	{ BASE, ID }
-$$LOOP(MOTOR)
 	{ "$$BASE", "$$ID" }
-$$ENDLOOP(MOTOR)
 }
+$$ENDLOOP(MOTOR)
 
+$$LOOP(INTERACTION)
 file topas_inter.tpl-req
 {
 	pattern
 	{ BASE, ID }
-$$LOOP(INTERACTION)
 	{ "$$BASE", "$$ID" }
-$$ENDLOOP(INTERACTION)
 }
+$$ENDLOOP(INTERACTION)
+
+$$LOOP(CARBIDE)
+file carbide.tpl-req
+{
+	{ BASE = "$$BASE" }
+}
+
+file carbide_reg.req
+{
+	{ BASE = "$$BASE" }
+}
+$$ENDLOOP(CARBIDE)

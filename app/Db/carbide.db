@@ -1,0 +1,224 @@
+##########################################################
+#
+# We have three polling requests that retrieve all of the
+# important information.
+#
+record(bo, "$(BASE):GETBASIC") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto GETBASIC($(BASE)) $(PORT)")
+    field(OMSL, "supervisory")
+    field(SCAN, "1 second")
+    field(PINI, "YES")
+}
+
+record(bo, "$(BASE):GETSTRCOM") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto GETSTRCOM($(BASE)) $(PORT)")
+    field(OMSL, "supervisory")
+    field(SCAN, "1 second")
+    field(PINI, "YES")
+}
+
+record(bi, "$(BASE):IsRemoteInterlockEnabled_RBV") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto GETIRIE $(PORT)")
+    field(ZNAM, "false")
+    field(ONAM, "true")
+    field(OMSL, "supervisory")
+    field(SCAN, "1 second")
+    field(PINI, "YES")
+}
+
+##########################################################
+#
+# These are the records written by GETBASIC and GETSTRCOM.
+#
+
+record(longout, "$(BASE):ActualPpDivider_RBV") {
+}
+
+record(ao, "$(BASE):TargetPulseDuration_RBV") {
+}
+
+record(ao, "$(BASE):ActualOutputEnergy_RBV") {
+}
+
+record(longout, "$(BASE):ActualHarmonic_RBV") {
+}
+
+record(bo, "$(BASE):IsOutputEnabled_RBV") {
+    field(ZNAM, "false")
+    field(ONAM, "true")
+}
+
+record(stringout, "$(BASE):ActualStateName_RBV") {
+}
+
+record(longout, "$(BASE):TargetPpDivider_RBV") {
+}
+
+record(ao, "$(BASE):TargetAttenuatorPercentage_RBV") {
+}
+
+record(longout, "$(BASE):ActualShutterState_RBV") {
+    field(ZNAM, "Closed")
+    field(ONAM, "Open")
+}
+
+record(ao, "$(BASE):ActualOutputFrequency_RBV") {
+}
+
+record(longout, "$(BASE):SelectedPresetIndex_RBV") {
+}
+
+record(longout, "$(BASE):LastExecutedPresetIndex_RBV") {
+}
+
+record(ao, "$(BASE):ActualOutputPower_RBV") {
+}
+
+record(stringout, "$(BASE):GeneralStatus_RBV") {
+}
+
+record(longout, "$(BASE):ActualPulseDuration_RBV") {
+}
+
+record(ao, "$(BASE):ActualAttenuatorPercentage_RBV") {
+}
+
+record(longout, "$(BASE):ActualBurstPulseCount_RBV") {
+}
+
+record(bo, "$(BASE):IsPowerlockEnabled_RBV") {
+    field(ZNAM, "false")
+    field(ONAM, "true")
+}
+
+record(longout, "$(BASE):TargetBurstPulseCount_RBV") {
+}
+
+record(ao, "$(BASE):PulseDurationPositiveChirpRange:To_RBV") {
+}
+
+record(ao, "$(BASE):PulseDurationPositiveChirpRange:From_RBV") {
+}
+
+record(ao, "$(BASE):PulseDurationNegativeChirpRange:To_RBV") {
+}
+
+record(ao, "$(BASE):PulseDurationNegativeChirpRange:From_RBV") {
+}
+
+record(ao, "$(BASE):ActualPosition_RBV") {
+}
+
+record(ao, "$(BASE):TargetPosition_RBV") {
+}
+
+record(ao, "$(BASE):PositionRange:To_RBV") {
+}
+
+record(ao, "$(BASE):PositionRange:From_RBV") {
+}
+
+##########################################################
+#
+# PUT methods
+#
+
+record(ao, "$(BASE):TargetPulseDuration") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto TPD $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(longout, "$(BASE):TargetPpDivider") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto TPPD $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(ao, "$(BASE):TargetAttenuatorPercentage") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto TAP $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(longout, "$(BASE):SelectedPresetIndex") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto SPI $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(longout, "$(BASE):TargetBurstPulseCount") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto TBPC $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+record(ao, "$(BASE):TargetPosition") {
+    field(DTYP, "stream")
+    field(OUT,  "@carbide.proto TPOS $(PORT)")
+    field(OMSL, "supervisory")
+}
+
+##########################################################
+#
+# POST methods
+#
+
+record(longin, "$(BASE):CloseOutput") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto CO $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):EnableOutput") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto EO $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):ApplySelectedPreset") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto ASP $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):GotoStandby") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto GSB $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):EnablePowerLock") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto EPL $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):DisablePowerLock") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto DPL $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):SaveAsShortestImpulseDuration") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto SASID $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}
+
+record(longin, "$(BASE):ResetRemoteInterlock") {
+    field(DTYP, "stream")
+    field(INP,  "@carbide.proto RRI $(PORT)")
+    field(HIHI,  "400")
+    field(HHSV,  "MAJOR")
+}

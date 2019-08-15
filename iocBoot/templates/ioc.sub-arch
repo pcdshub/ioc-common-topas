@@ -5,11 +5,21 @@ file topas-ioc.archive
 	{ IOC = "$$IOC_PV" }
 }
 
+$$LOOP(TOPAS)
 file topas.tpl-arch
 {
-	pattern
-	{ BASE }
-$$LOOP(TOPAS)
-	{ "$$BASE" }
-$$ENDLOOP(TOPAS)
+	{ BASE = "$$BASE" }
 }
+$$ENDLOOP(TOPAS)
+
+$$LOOP(CARBIDE)
+file carbide.tpl-arch
+{
+	{ BASE = "$$BASE" }
+}
+
+file carbide_reg.arch
+{
+	{ BASE = "$$BASE" }
+}
+$$ENDLOOP(CARBIDE)
