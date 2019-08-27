@@ -194,7 +194,7 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
     size_t i;
 
     if (pasyn->len == 0) {
-        asynPrint(pasynUser, ASYN_TRACE_FLOW, "Interpose interface doing read.\n");
+        asynPrint(pasynUser, ASYN_TRACE_FLOW, "%s doing read.\n", pasyn->portName);
         status = pasynOctetSyncIO->read(pasyn->user, (char *)pasyn->buf,
                                         sizeof(pasyn->buf), pasynUser->timeout,
                                         &i, eomReason);
@@ -203,7 +203,7 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
                       (int) status);
             return status;
         }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW, "Interpose interface read %d bytes.\n", (int) i);
+        asynPrint(pasynUser, ASYN_TRACE_FLOW, "%s read %d bytes.\n", pasyn->portName, (int) i);
         pasyn->len = i;
         pasyn->start = 0;
     }
@@ -215,10 +215,11 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
         }
         i = (pasyn->len < 3) ? 0 : (pasyn->buf[pasyn->start+1] +
                                             (pasyn->buf[pasyn->start+2] << 8));
-        asynPrint(pasynUser, ASYN_TRACE_FLOW, "Interpose interface found start of packet at %d, length = %d\n",
-                  pasyn->start, (int)(i+5));
+        asynPrint(pasynUser, ASYN_TRACE_FLOW, "%s found start of packet at %d, length = %d\n",
+                  pasyn->portName, pasyn->start, (int)(i+5));
         if (pasyn->len < i + 5) {
-            asynPrint(pasynUser, ASYN_TRACE_ERROR, "Partial packet received, flushing!\n");
+            asynPrint(pasynUser, ASYN_TRACE_ERROR, "%s: Partial packet received, flushing!\n",
+                      pasyn->portName);
             pasyn->len = 0;
             *nbytesTransfered = 0;
             status = asynError;
@@ -227,19 +228,20 @@ static asynStatus readIt(void *ppvt, asynUser *pasynUser,
             unsigned int crc = ccitt16(&pasyn->buf[pasyn->start], i + 3);
             if (pasyn->buf[pasyn->start + i + 3] == (crc & 0xff) &&
                  pasyn->buf[pasyn->start + i + 4] == ((crc >> 8) & 0xff)) {
-                asynPrint(pasynUser, ASYN_TRACE_FLOW, "Interpose interface found %d byte packet at offset %d.\n",
-                          (int)(i + 5), pasyn->start);
+                asynPrint(pasynUser, ASYN_TRACE_FLOW, "%s found %d byte packet at offset %d.\n",
+                          pasyn->portName, (int)(i + 5), pasyn->start);
                 memcpy(data, &pasyn->buf[pasyn->start], i + 3);
                 memcpy(&data[i+3], "MCBEOL", 7);
                 *nbytesTransfered = i + 9;
                 pasyn->start += i + 5;
                 pasyn->len -= i + 5;
                 asynPrintIO(pasynUser, ASYN_TRACEIO_DRIVER, data, *nbytesTransfered,
-                            "Interpose read %d\n", (int)*nbytesTransfered);
+                            "%s read %d\n", pasyn->portName, (int)*nbytesTransfered);
                 status = asynSuccess;
                 break;
             } else {
-                asynPrint(pasynUser, ASYN_TRACE_ERROR, "Bad CRC received, flushing!\n");
+                asynPrint(pasynUser, ASYN_TRACE_ERROR, "%s: Bad CRC received, flushing!\n",
+                          pasyn->portName);
                 *nbytesTransfered = 0;
                 pasyn->start += 1; /* Maybe 0xaa is a data byte? */
                 pasyn->len -= 1;
@@ -257,38 +259,6 @@ static asynStatus flushIt(void *ppvt, asynUser *pasynUser)
     cpAsynPort_t *pasyn = (cpAsynPort_t *)ppvt;
     
     return pasynOctetSyncIO->flush(pasyn->user);
-}
-
-static asynStatus setInputEos(void *ppvt, asynUser *pasynUser,
-                              const char *eos, int eoslen)
-{
-    cpAsynPort_t *pasyn = (cpAsynPort_t *)ppvt;
-
-    return pasynOctetSyncIO->setInputEos(pasyn->user, eos, eoslen);
-}
-
-static asynStatus getInputEos(void *ppvt, asynUser *pasynUser,
-                              char *eos, int eossize, int *eoslen)
-{
-    cpAsynPort_t *pasyn = (cpAsynPort_t *)ppvt;
-
-    return pasynOctetSyncIO->getInputEos(pasyn->user, eos, eossize, eoslen);
-}
-
-static asynStatus setOutputEos(void *ppvt, asynUser *pasynUser,
-                               const char *eos, int eoslen)
-{
-    cpAsynPort_t *pasyn = (cpAsynPort_t *)ppvt;
-
-    return pasynOctetSyncIO->setOutputEos(pasyn->user, eos, eoslen);
-}
-
-static asynStatus getOutputEos(void *ppvt, asynUser *pasynUser,
-    char *eos, int eossize, int *eoslen)
-{
-    cpAsynPort_t *pasyn = (cpAsynPort_t *)ppvt;
-
-    return pasynOctetSyncIO->getOutputEos(pasyn->user, eos, eossize, eoslen);
 }
 
 static void
@@ -354,12 +324,6 @@ epicsShareFunc int drvAsynCarbidePacketizeConfigure(const char *portName, char *
     pasyn->octet_if.read = readIt;
     pasyn->octet_if.write = writeIt;
     pasyn->octet_if.flush = flushIt;
-#if 0
-    pasyn->octet_if.setInputEos = setInputEos;
-    pasyn->octet_if.setOutputEos = setOutputEos;
-    pasyn->octet_if.getInputEos = getInputEos;
-    pasyn->octet_if.getOutputEos = getOutputEos;
-#endif
     status = pasynOctetBase->initialize(pasyn->portName, &pasyn->octet, 0, 0, 1);
     if(status != asynSuccess) {
         printf("drvAsynCarbidePacketizeConfigure: pasynOctetBase->initialize failed.\n");

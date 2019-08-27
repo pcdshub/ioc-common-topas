@@ -697,17 +697,6 @@ static void drvAsynCurlJSONPortConfigureCallFunc(const iocshArgBuf *args)
     drvAsynCurlJSONPortConfigure(args[0].sval, args[1].sval);
 }
 
-static const iocshArg asynInterposeCarbidePacketizeArg0 = { "port name",iocshArgString};
-static const iocshArg asynInterposeCarbidePacketizeArg1 = { "address",iocshArgInt};
-static const iocshArg *asynInterposeCarbidePacketizeArgs[] = {
-    &asynInterposeCarbidePacketizeArg0, &asynInterposeCarbidePacketizeArg1 };
-static const iocshFuncDef asynInterposeCarbidePacketizeFuncDef =
-                      {"asynInterposeCarbidePacketize",2,asynInterposeCarbidePacketizeArgs};
-static void asynInterposeCarbidePacketizeCallFunc(const iocshArgBuf *args)
-{
-    asynInterposeCarbidePacketize(args[0].sval, args[1].ival);
-}
-
 static const iocshArg drvAsynCarbidePacketizeArg0 = { "port name",iocshArgString};
 static const iocshArg drvAsynCarbidePacketizeArg1 = { "raw port name",iocshArgString};
 static const iocshArg *drvAsynCarbidePacketizeArgs[] = {
@@ -729,7 +718,6 @@ drvAsynCurlJSONPortRegisterCommands(void)
     static int firstTime = 1;
     if (firstTime) {
         iocshRegister(&drvAsynCurlJSONPortConfigureFuncDef,drvAsynCurlJSONPortConfigureCallFunc);
-        iocshRegister(&asynInterposeCarbidePacketizeFuncDef,asynInterposeCarbidePacketizeCallFunc);
         iocshRegister(&drvAsynCarbidePacketizeFuncDef,drvAsynCarbidePacketizeCallFunc);
         firstTime = 0;
     }
