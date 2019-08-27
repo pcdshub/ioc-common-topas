@@ -1,32 +1,32 @@
-InTerminator  = "";
-OutTerminator = "";
-ReplyTimeout  =  200;
-ReadTimeout   =  100;
+InTerminator  = "MCBEOL";
+OutTerminator =  ;
+ReplyTimeout  =  250;
+ReadTimeout   =  250;
 WriteTimeout  =  100;
-ExtraInput    = Ignore;
+# ExtraInput    = Ignore;
 
-GETINT   { out 0xaa 0x0b 0x00 1 0 \2 \1 \4 0 "%#<ccitt16>";
-           in  0xaa "%*c%*c"  5 0 \2 \1 \4 0 0x10 "%#4r%#<ccitt16>";
-	   @mismatch {
-	   in  0xaa "%*c%*c"  5 0 \2 \1 \4 0 "%(\$3:ERROR)1r%#<ccitt16>";
-	   } }
+GETINT   { out 0xaa 0x06 0x00  1 0 $2 $1 $4 0 "%#<ccitt16>";
+           in  0xaa "%*1r%*1r" 5 0 $2 $1 $4 0 0x10 "%#4r";
+	 }
 
-GETFLOAT { out 0xaa 0x0b 0x00 1 0 \2 \1 \4 0 "%#<ccitt16>";
-	   in  0xaa "%*c%*c"  5 0 \2 \1 \4 0 0x10 "%#4R%#<ccitt16>";
-	   @mismatch {
-     	   in  0xaa "%*c%*c"  5 0 \2 \1 \4 0 %(\$3:ERROR)1r%#<ccitt16>";
-	   } }
+GETSTR   { out 0xaa 0x06 0x00  1 0 $2 $1 $4 0 "%#<ccitt16>";
+           in  0xaa "%*1r%*1r" 5 0 $2 $1 $4 0 0x10 "%#100s";
+	 }
 
-SETINT   { out 0xaa 0x0f 0x00 2 0 \2 \1 \4 0 "%4r%#<ccitt16>";
-	   in  0xaa "%*c%*c"  6 0 \2 \1 \4 0 0x10 "%#<ccitt16>";
-	   @mismatch {
-     	   in  0xaa "%*c%*c"  6 0 \2 \1 \4 0 "%(\$3:ERROR)1r%#<ccitt16>";
-	   } }
+GETFLOAT { out 0xaa 0x06 0x00  1 0 $2 $1 $4 0 "%#<ccitt16>";
+	   in  0xaa "%*1r%*1r" 5 0 $2 $1 $4 0 0x10 "%#4R";
+	 }
 
-SETFLOAT { out 0xaa 0x0f 0x00 2 0 \2 \1 \4 0 "%4R%#<ccitt16>";
-	   in  0xaa "%*c%*c"  6 0 \2 \1 \4 0 0x10 "%#<ccitt16>";
- 	   @mismatch {
-     	   in  0xaa "%*c%*c"  6 0 \2 \1 \4 0 "%(\$3:ERROR)1r%#<ccitt16>";
-	   } }
+SETINT   { out 0xaa 0x0a 0x00  2 0 $2 $1 $4 0 "%4r%#<ccitt16>";
+	   in  0xaa "%*1r%*1r" 6 0 $2 $1 $4 0 0x10;
+         }
 
-BCAST    { in  0xaa "%*c%*c"  3 0 "%(\$1:REG)#2r" "%(\$1:INDEX)1r%*c%(\$1:VAL)#4r%#<ccitt16>";
+SETFLOAT { out 0xaa 0x0a 0x00  2 0 $2 $1 $4 0 "%4R%#<ccitt16>";
+	   in  0xaa "%*1r%*1r" 6 0 $2 $1 $4 0 0x10;
+	 }
+
+BCASTINT   { in  0xaa "%*1r%*1r" 3 0 $2 $1 0 0 "%#4r"; }
+
+BCASTFLOAT { in  0xaa "%*1r%*1r" 3 0 $2 $1 0 0 "%#4R"; }
+
+BCASTSTR   { in  0xaa "%*1r%*1r" 3 0 $2 $1 0 0 "%#100s"; }

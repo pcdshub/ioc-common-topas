@@ -55,7 +55,7 @@ typedef struct cjAsynPort {
     int            incnt;
     int            incur;
     char           fullURL[MAXTXBUF];
-#define MAXFILTER  10
+#define MAXFILTER  100
     char          *filters[MAXFILTER];
     int            fcnt;
     int            fcur;
@@ -682,6 +682,9 @@ epicsShareFunc int drvAsynCurlJSONPortConfigure(const char *portName, char *base
 /*
  * IOC shell command registration
  */
+extern int asynInterposeCarbidePacketize(const char *portName, int addr);
+extern int drvAsynCarbidePacketizeConfigure(const char *portName, char *rawPortName);
+
 extern "C" {
 static const iocshArg drvAsynCurlJSONPortConfigureArg0 = { "port name",iocshArgString};
 static const iocshArg drvAsynCurlJSONPortConfigureArg1 = { "base URL",iocshArgString};
@@ -694,6 +697,28 @@ static void drvAsynCurlJSONPortConfigureCallFunc(const iocshArgBuf *args)
     drvAsynCurlJSONPortConfigure(args[0].sval, args[1].sval);
 }
 
+static const iocshArg asynInterposeCarbidePacketizeArg0 = { "port name",iocshArgString};
+static const iocshArg asynInterposeCarbidePacketizeArg1 = { "address",iocshArgInt};
+static const iocshArg *asynInterposeCarbidePacketizeArgs[] = {
+    &asynInterposeCarbidePacketizeArg0, &asynInterposeCarbidePacketizeArg1 };
+static const iocshFuncDef asynInterposeCarbidePacketizeFuncDef =
+                      {"asynInterposeCarbidePacketize",2,asynInterposeCarbidePacketizeArgs};
+static void asynInterposeCarbidePacketizeCallFunc(const iocshArgBuf *args)
+{
+    asynInterposeCarbidePacketize(args[0].sval, args[1].ival);
+}
+
+static const iocshArg drvAsynCarbidePacketizeArg0 = { "port name",iocshArgString};
+static const iocshArg drvAsynCarbidePacketizeArg1 = { "raw port name",iocshArgString};
+static const iocshArg *drvAsynCarbidePacketizeArgs[] = {
+    &drvAsynCarbidePacketizeArg0, &drvAsynCarbidePacketizeArg1 };
+static const iocshFuncDef drvAsynCarbidePacketizeFuncDef =
+                      {"drvAsynCarbidePacketizeConfigure",2,drvAsynCarbidePacketizeArgs};
+static void drvAsynCarbidePacketizeCallFunc(const iocshArgBuf *args)
+{
+    drvAsynCarbidePacketizeConfigure(args[0].sval, args[1].sval);
+}
+
 /*
  * This routine is called before multitasking has started, so there's
  * no race condition in the test/set of firstTime.
@@ -704,6 +729,8 @@ drvAsynCurlJSONPortRegisterCommands(void)
     static int firstTime = 1;
     if (firstTime) {
         iocshRegister(&drvAsynCurlJSONPortConfigureFuncDef,drvAsynCurlJSONPortConfigureCallFunc);
+        iocshRegister(&asynInterposeCarbidePacketizeFuncDef,asynInterposeCarbidePacketizeCallFunc);
+        iocshRegister(&drvAsynCarbidePacketizeFuncDef,drvAsynCarbidePacketizeCallFunc);
         firstTime = 0;
     }
 }

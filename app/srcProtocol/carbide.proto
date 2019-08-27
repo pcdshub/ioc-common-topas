@@ -5,7 +5,7 @@ ReadTimeout   =  100;
 WriteTimeout  =  100;
 ExtraInput    = Ignore;
 
-GETBASIC { out "GET:Basic:ActualPpDivider,TargetPulseDuration,ActualOutputEnergy,ActualHarmonic,IsOutputEnabled,ActualStateName,TargetPpDivider,TargetAttenuatorPercentage,ActualShutterState,ActualOutputFrequency,SelectedPresetIndex,LastExecutedPresetIndex,ActualOutputPower,GeneralStatus,ActualPulseDuration,ActualAttenuatorPercentage,ActualBurstPulseCount,IsPowerlockEnabled,TargetBurstPulseCount"
+GETBASIC { out "GET:Basic:ActualPpDivider,TargetPulseDuration,ActualOutputEnergy,ActualHarmonic,IsOutputEnabled,ActualStateName,TargetPpDivider,TargetAttenuatorPercentage,ActualShutterState,ActualOutputFrequency,SelectedPresetIndex,ActualOutputPower,GeneralStatus,ActualPulseDuration,ActualAttenuatorPercentage,ActualBurstPulseCount,IsPowerlockEnabled,TargetBurstPulseCount,LastExecutedPresetIndex";
 	   in "%*d";
 	   in "ActualPpDivider %(\$1:ActualPpDivider_RBV)d";
 	   in "TargetPulseDuration %(\$1:TargetPulseDuration_RBV)g";
@@ -15,10 +15,9 @@ GETBASIC { out "GET:Basic:ActualPpDivider,TargetPulseDuration,ActualOutputEnergy
  	   in "ActualStateName \"%(\$1:ActualStateName_RBV)[^\"]\"";
 	   in "TargetPpDivider %(\$1:TargetPpDivider_RBV)d";
 	   in "TargetAttenuatorPercentage %(\$1:TargetAttenuatorPercentage_RBV)g";
-	   in "ActualShutterState %(\$1:ActualShutterState_RBV){Closed|Open}";
+	   in "ActualShutterState \"%(\$1:ActualShutterState_RBV){Closed|Open}\"";
 	   in "ActualOutputFrequency %(\$1:ActualOutputFrequency_RBV)g";
 	   in "SelectedPresetIndex %(\$1:SelectedPresetIndex_RBV)d";
-	   in "LastExecutedPresetIndex %(\$1:LastExecutedPresetIndex_RBV)d";
 	   in "ActualOutputPower %(\$1:ActualOutputPower_RBV)g";
 	   in "GeneralStatus \"%(\$1:GeneralStatus_RBV)[^\"]\"";
 	   in "ActualPulseDuration %(\$1:ActualPulseDuration_RBV)d";
@@ -26,6 +25,9 @@ GETBASIC { out "GET:Basic:ActualPpDivider,TargetPulseDuration,ActualOutputEnergy
 	   in "ActualBurstPulseCount %(\$1:ActualBurstPulseCount_RBV)d";
 	   in "IsPowerlockEnabled %(\$1:IsPowerlockEnabled_RBV){false|true}";
 	   in "TargetBurstPulseCount %(\$1:TargetBurstPulseCount_RBV)d"; }
+
+# There might *be* no last executed preset, so we need to I/O Intr scan this.
+LEPI     { in "LastExecutedPresetIndex %d"; }
 
 TAP      { out "PUTV:Basic/TargetAttenuatorPercentage";
 	   out "%g";
@@ -73,6 +75,6 @@ SASID    { out "POST:StretcherCompressor/SaveAsShortestImpulseDuration"; in "%d"
 
 GETIRIE  { out "GET:Advanced/IsRemoteInterlockActive";
 	   in "%*d";
-	   in "IsPowerlockEnabled %(\$1:IsPowerlockEnabled_RBV){false|true}"; }
+	   in "IsPowerlockEnabled %{false|true}"; }
 
 RRI      { out "POST:Advanced/ResetRemoteInterlock"; in "%d"; }

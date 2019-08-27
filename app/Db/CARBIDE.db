@@ -2,12 +2,14 @@ $$LOOP(REG)
 $$IF(DIR,WO)
 $$ELSE(DIR)
 
-record($$IF(TYPE,INT)longin$$ELSE(TYPE)ai$$ENDIF(TYPE), "$(BASE):$$(NAME)$$IF(ZRVL,RAW,)_RBV") {
+record($$IF(TYPE,INT)longin$$ENDIF(TYPE)$$IF(TYPE,STR)stringin$$ENDIF(TYPE)$$IF(TYPE,FLOAT)ai$$ENDIF(TYPE), "$(BASE):$$(NAME)$$IF(ZRVL,RAW,)_RBV") {
     field(DTYP, "stream")
-    field(INP,  "@yadp.proto GET$$TYPE(0x$$SUBSTR($$ADDR,0,2),0x$$SUBSTR($$ADDR,2,4),$(BASE),$$IF(IDX,$$IDX,0)) $(PORT)")
-    field(SCAN, "$$IF(SCAN,$$SCAN,Passive)")
-    field(PINI, "YES")
-    field(EGU, "$$IF(EGU,$$EGU,)")
+    field(INP,  "@yadp.proto $$IF(BCAST,BCAST,GET)$$TYPE(0x$$SUBSTR($$ADDR,0,2),0x$$SUBSTR($$ADDR,2,4),$(BASE),$$IF(IDX,$$IDX,0)) $(PORT)")
+    field(SCAN, "$$IF(BCAST)I/O Intr$$ELSE(BCAST)$$IF(SCAN)$(SCAN)$$ELSE(SCAN)Passive$$ENDIF(SCAN)$$ENDIF(BCAST)")
+    field(PINI, "$(PINI)")
+$$IF(EGU)
+    field(EGU, "$$EGU")
+$$ENDIF(EGU)
 $$IF(ZRVL)
     field(FLNK, "$(BASE):$$(NAME)_RBV PP")
 $$ELSE(ZRVL)
@@ -104,7 +106,7 @@ $$ENDIF(MASK3)
 $$IF(MASK4)
 
 record(calc, "$(BASE):$$(NAME4)_RBV") {
-    field(4NPA, "$(BASE):$$(NAME)_RBV NPP")
+    field(INPA, "$(BASE):$$(NAME)_RBV NPP")
     field(CALC, "(A&$$MASK4)?1:0")
 $$IF(MASK5)
     field(FLNK, "$(BASE):$$(NAME5)_RBV PP")

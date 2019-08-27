@@ -7,16 +7,16 @@ record(bo, "$(BASE):GETBASIC") {
     field(DTYP, "stream")
     field(OUT,  "@carbide.proto GETBASIC($(BASE)) $(PORT)")
     field(OMSL, "supervisory")
-    field(SCAN, "1 second")
-    field(PINI, "YES")
+    field(SCAN, "$(SCAN)")
+    field(PINI, "$(PINI)")
 }
 
 record(bo, "$(BASE):GETSTRCOM") {
     field(DTYP, "stream")
     field(OUT,  "@carbide.proto GETSTRCOM($(BASE)) $(PORT)")
     field(OMSL, "supervisory")
-    field(SCAN, "1 second")
-    field(PINI, "YES")
+    field(SCAN, "$(SCAN)")
+    field(PINI, "$(PINI)")
 }
 
 record(bi, "$(BASE):IsRemoteInterlockEnabled_RBV") {
@@ -24,15 +24,21 @@ record(bi, "$(BASE):IsRemoteInterlockEnabled_RBV") {
     field(INP,  "@carbide.proto GETIRIE $(PORT)")
     field(ZNAM, "false")
     field(ONAM, "true")
-    field(OMSL, "supervisory")
-    field(SCAN, "1 second")
-    field(PINI, "YES")
+    field(SCAN, "$(SCAN)")
+    field(PINI, "$(PINI)")
 }
 
 ##########################################################
 #
 # These are the records written by GETBASIC and GETSTRCOM.
 #
+
+# This doesn't seem to work!
+#record(longin, "$(BASE):LastExecutedPresetIndex_RBV") {
+#    field(DTYP, "stream")
+#    field(INP,  "@carbide.proto LEPI $(PORT)")
+#    field(SCAN, "I/O Intr")
+#}
 
 record(longout, "$(BASE):ActualPpDivider_RBV") {
 }
@@ -60,7 +66,7 @@ record(longout, "$(BASE):TargetPpDivider_RBV") {
 record(ao, "$(BASE):TargetAttenuatorPercentage_RBV") {
 }
 
-record(longout, "$(BASE):ActualShutterState_RBV") {
+record(bo, "$(BASE):ActualShutterState_RBV") {
     field(ZNAM, "Closed")
     field(ONAM, "Open")
 }
@@ -69,9 +75,6 @@ record(ao, "$(BASE):ActualOutputFrequency_RBV") {
 }
 
 record(longout, "$(BASE):SelectedPresetIndex_RBV") {
-}
-
-record(longout, "$(BASE):LastExecutedPresetIndex_RBV") {
 }
 
 record(ao, "$(BASE):ActualOutputPower_RBV") {
@@ -221,4 +224,12 @@ record(longin, "$(BASE):ResetRemoteInterlock") {
     field(INP,  "@carbide.proto RRI $(PORT)")
     field(HIHI,  "400")
     field(HHSV,  "MAJOR")
+}
+
+##########################################################
+#
+# Misc random PVs
+#
+record(longout, "$(BASE):ERROR") {
+    field(PINI, "YES")
 }

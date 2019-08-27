@@ -45,7 +45,8 @@ $$ENDLOOP(TOPAS)
 
 $$LOOP(CARBIDE)
 drvAsynCurlJSONPortConfigure(CBD$$INDEX, "http://$$HOST:$$IF(PORT,$$PORT,20010)/v$$IF(API,$$API,0)")
-drvAsynIPPortConfigure("CBDRAW$$INDEX", "$$HOST:$$IF(RAWPORT,$$RAWPORT,20016) TCP", 0, 0, 0 )
+drvAsynIPPortConfigure("CBDR$$INDEX", "$$HOST:$$IF(RAWPORT,$$RAWPORT,20016) TCP", 0, 0, 0 )
+drvAsynCarbidePacketizeConfigure("CBDRAW$$INDEX", "CBDR$$INDEX")
 
 #define ASYN_TRACE_ERROR     0x0001
 #define ASYN_TRACEIO_DEVICE  0x0002
@@ -53,12 +54,14 @@ drvAsynIPPortConfigure("CBDRAW$$INDEX", "$$HOST:$$IF(RAWPORT,$$RAWPORT,20016) TC
 #define ASYN_TRACEIO_DRIVER  0x0008
 #define ASYN_TRACE_FLOW      0x0010
 $$IF(DEBUG,,#)asynSetTraceMask( "CBD$$INDEX", 0, 0x19) # log everything
+$$IF(RAWDEBUG,,#)asynSetTraceMask( "CBDR$$INDEX", 0, 0x19) # log everything
 $$IF(RAWDEBUG,,#)asynSetTraceMask( "CBDRAW$$INDEX", 0, 0x19) # log everything
 #define ASYN_TRACEIO_ASCII  0x0001
 #define ASYN_TRACEIO_ESCAPE 0x0002
 #define ASYN_TRACEIO_HEX    0x0004
 $$IF(DEBUG,,#)asynSetTraceIOMask( "CBD$$INDEX", 0, 2)  # Escape the strings.
-$$IF(RAWDEBUG,,#)asynSetTraceIOMask( "CBDRAW$$INDEX", 0, 2)  # Escape the strings.
+$$IF(RAWDEBUG,,#)asynSetTraceIOMask( "CBDR$$INDEX", 0, 4)  # Escape the strings.
+$$IF(RAWDEBUG,,#)asynSetTraceIOMask( "CBDRAW$$INDEX", 0, 4)  # Escape the strings.
 
 ## Asyn record support
 dbLoadRecords( "db/asynRecord.db","P=$$BASE,R=CBD,PORT=CBD$$INDEX,ADDR=0,OMAX=0,IMAX=0")
@@ -80,11 +83,11 @@ $$ENDLOOP(SPECTROMETER)
 # Load record instances
 
 $$LOOP(TOPAS)
-dbLoadRecords( "db/topas.db",              	"BASE=$$BASE, PORT=TOPAS$$INDEX" )
+dbLoadRecords( "db/topas.db",       "BASE=$$BASE,PORT=TOPAS$$INDEX" )
 $$ENDLOOP(TOPAS)
 $$LOOP(CARBIDE)
-dbLoadRecords( "db/carbide.db",            	"BASE=$$BASE, PORT=CBD$$INDEX" )
-dbLoadRecords( "db/carbide_reg.db",            	"BASE=$$BASE, PORT=CBDRAW$$INDEX" )
+dbLoadRecords( "db/carbide.db",     "BASE=$$BASE,PORT=CBD$$INDEX,$$IF(DEBUG)PINI=NO,SCAN=Passive$$ELSE(DEBUG)PINI=YES,SCAN=1 second$$ENDIF(DEBUG)" )
+dbLoadRecords( "db/carbide_reg.db", "BASE=$$BASE,PORT=CBDRAW$$INDEX,$$IF(RAWDEBUG)PINI=NO,SCAN=Passive$$ELSE(RAWDEBUG)PINI=YES,SCAN=1 second$$ENDIF(RAWDEBUG)" )
 $$ENDLOOP(CARBIDE)
 $$LOOP(MOTOR)
 dbLoadRecords( "db/topas_motor.db", "BASE=$$BASE,PORT=TOPAS$$PORT,ID=$$ID,NAME=$$NAME,EGU=$$EGU,LOPR=$$LOPR,HOPR=$$HOPR" )

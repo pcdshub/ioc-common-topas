@@ -61,6 +61,7 @@ topas_SRCS_DEFAULT += topasMain.cpp
 #topas_SRCS += dbSubExample.c
 
 topas_SRCS += drvAsynCurlJSONPort.cpp
+topas_SRCS += drvAsynCarbidePacketize.cpp
 
 topas_LIBS += devIocStats
 topas_LIBS += autosave
