@@ -3,9 +3,9 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1702
-y 614
-w 820
+x 1704
+y 641
+w 960
 h 340
 font "helvetica-bold-i-18.0"
 fontAlign "center"
@@ -37,7 +37,7 @@ release 0
 # Geometry
 x 8
 y 8
-w 810
+w 942
 h 320
 # Appearance
 border
